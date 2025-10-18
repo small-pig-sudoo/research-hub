@@ -1,0 +1,118 @@
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --primary: #2f54eb;
+  --muted: #8c8f96;
+  --radius: 12px;
+  --shadow: 0 6px 18px rgba(31, 41, 55, 0.06);
+  --container-max: 1100px;
+
+
+  a {
+    font-weight: 500;
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  a:hover {
+    color: #1d39c4;
+  }
+
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #app {
+    height: 100%;
+    margin: 0;
+    font-family: "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: #222;
+  }
+
+  .main-wrapper {
+    max-width: var(--container-max);
+    margin: 28px auto;
+    padding: 18px;
+  }
+
+
+  /* 卡片基类 */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px;
+  }
+
+  /* header 样式 */
+  .app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: linear-gradient(90deg, rgba(47, 84, 235, 0.95), rgba(67, 56, 202, 0.95));
+    color: white;
+    border-radius: 12px;
+  }
+
+  /* 左侧菜单容器 */
+  .app-aside {
+    width: 220px;
+    min-height: calc(100vh - 56px);
+  }
+
+  /* 主体内容 */
+  .app-content {
+    padding: 18px;
+  }
+
+  /* 小按钮风格 */
+  .el-button--primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .el-button--primary:hover {
+    background: #1d39c4;
+    border-color: #1d39c4;
+  }
+
+  /* ...existing code... */
+}
+
+.card {
+  padding: 2em;
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}

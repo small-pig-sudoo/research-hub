@@ -1,0 +1,40 @@
+/* ==============================
+   全局字体设置（解决中文乱码）
+================================ */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC',
+        'Hiragino Sans GB', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+    background-color: #f5f6fa;
+    color: #333;
+}
+
+/* ==============================
+   Element Plus 组件默认优化
+================================ */
+.el-header,
+.el-aside,
+.el-main {
+    font-family: inherit;
+}
+
+/* 确保下拉菜单、按钮的文字不变形 */
+.el-button,
+.el-dropdown-menu,
+.el-menu {
+    font-family: inherit;
+}
+
+/* ==============================
+   页面基础样式
+================================ */
+a {
+    color: #409eff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

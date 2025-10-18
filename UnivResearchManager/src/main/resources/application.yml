@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    # 修复数据库时区+连接兼容问题
+    url: jdbc:mysql://localhost:3306/research_hub?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: root
+    password: 2303050410  # 你的数据库密码，保持不变
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 优化数据库连接池
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+  jpa:
+    hibernate:
+      ddl-auto: update  # 首次启动想自动建表就改 create，之后改回 update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect  # 适配 MySQL 8.0+
+        jdbc.batch_size: 30
+    open-in-view: false
+
+# 关键：替换成 64 位以上的 JWT 密钥（直接用下面的示例，或自己生成）
+jwt:
+  secret: q3t6w9z$C&F)J@NcRfUjXn2r5u8x/A?D*G-KaPdSgVkYp3s6v9y$B&E)H@McQfTjWnZr4u7
+  expiration: 3600000  # 1小时过期，不用改
