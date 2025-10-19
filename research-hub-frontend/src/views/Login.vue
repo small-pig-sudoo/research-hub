@@ -291,8 +291,7 @@ async function handleForgotPassword() {
 </script>
 
 <style scoped>
-
-/* 强制重置所有可能的滚动和边距 */
+/* 关键修复：移除所有全局固定定位和溢出隐藏 */
 :global(html),
 :global(body),
 :global(#app) {
@@ -300,26 +299,18 @@ async function handleForgotPassword() {
   padding: 0 !important;
   height: 100% !important;
   width: 100% !important;
-  overflow: hidden !important;
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  /* 移除 overflow: hidden 和 position: fixed */
 }
 
-/* 登录容器：绝对全屏，无滚动 */
+/* 登录容器：使用min-height而不是固定高度 */
 .login-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
   margin: 0;
-  padding: 0;
-  overflow: hidden;
+  padding: 20px;
+  box-sizing: border-box;
   
-  /* 背景图片配置 - 只使用纯图片，无任何颜色叠加 */
+  /* 背景图片配置 */
   background-image: url('/login-bg.jpg.png');
   background-repeat: no-repeat;
   background-position: center center;
@@ -347,7 +338,7 @@ async function handleForgotPassword() {
   overflow: hidden;
   
   max-width: 90vw;
-  max-height: 90vh;
+  /* 移除 max-height 限制，让内容自然伸展 */
 }
 
 /* 标签页容器 */
@@ -470,9 +461,16 @@ async function handleForgotPassword() {
 
 /* 移动端适配 */
 @media (max-width: 480px) {
+  .login-container {
+    padding: 10px;
+    min-height: 100vh;
+    align-items: flex-start;
+    padding-top: 20px;
+  }
+  
   .login-card {
-    width: calc(100% - 40px);
-    max-width: calc(100% - 40px);
+    width: 100%;
+    max-width: 100%;
   }
   
   .form-container {
@@ -494,13 +492,21 @@ async function handleForgotPassword() {
 
 /* 超小屏幕适配 */
 @media (max-width: 320px) {
-  .login-card {
-    width: calc(100% - 32px);
-    max-width: calc(100% - 32px);
+  .login-container {
+    padding: 8px;
   }
   
   .form-container {
     padding: 20px 20px 28px;
+  }
+}
+
+/* 当内容很长时的滚动支持 */
+@media (max-height: 600px) {
+  .login-container {
+    align-items: flex-start;
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
 }
 </style>

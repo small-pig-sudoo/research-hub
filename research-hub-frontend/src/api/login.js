@@ -1,6 +1,50 @@
 import request from '../utils/request'
 
-export function loginAPI(username, password) {
-    // 根据后端实际接口调整路径 /user/login 或 /auth/login
-    return request.post('/api/auth/login', { username, password })
+export async function login(username, password) {
+    return request({
+        url: '/api/auth/login',
+        method: 'post',
+        data: {
+            username,
+            password
+        }
+    })
+}
+
+export async function logout() {
+    return request({
+        url: '/api/auth/logout',
+        method: 'post'
+    })
+}
+
+export async function getProfile() {
+    return request({
+        url: '/api/user/profile', // 鏍规嵁鎮ㄧ殑UserController璺緞璋冩暣
+        method: 'get'
+    })
+}
+
+export async function register(userData) {
+    return request({
+        url: '/api/auth/register',
+        method: 'post',
+        data: userData
+    })
+}
+
+export async function forgotPassword(email) {
+    return request({
+        url: '/api/auth/forgot-password',
+        method: 'post',
+        data: { email }
+    })
+}
+
+// 娴嬭瘯鍚庣杩炴帴
+export async function testConnection() {
+    return request({
+        url: '/api/auth/test', // 闇�瑕佸湪鍚庣娣诲姞娴嬭瘯鎺ュ彛
+        method: 'get'
+    })
 }
