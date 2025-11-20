@@ -1,23 +1,24 @@
 <!-- src/components/Layout.vue -->
 <template>
   <div class="app-layout">
-    <!-- ²à±ßÀ¸£¨µÇÂ¼Ò³Òş²Ø£© -->
+    <!-- ä¾§è¾¹æ ï¼ˆç™»å½•é¡µéšè—ï¼‰ -->
     <el-aside
       v-if="!hideLayout"
       :width="isCollapsed ? '64px' : '240px'"
       class="sidebar"
     >
+      <!-- å·¦ä¸Šè§’ Logo + ç³»ç»Ÿåç§° -->
       <div class="sidebar-header">
         <div class="logo" v-if="!isCollapsed">
-          <img src="@/assets/logo.png" alt="Logo" class="logo-img" />
-          <span class="logo-text">¿ÆÑĞ¹ÜÀíÏµÍ³</span>
+          <img src="/logo.png.jpg" alt="Logo" class="logo-img" />
+          <span class="logo-text">é«˜æ ¡ç§‘ç ”ç®¡ç†é¡¹ç›®ç³»ç»Ÿ</span>
         </div>
         <div class="logo-collapsed" v-else>
-          <img src="@/assets/logo.png" alt="Logo" class="logo-img" />
+          <img src="/logo.png.jpg" alt="Logo" class="logo-img" />
         </div>
       </div>
 
-      <!-- ²Ëµ¥ÇøÓò¿É¹ö¶¯ -->
+      <!-- èœå•åŒºåŸŸå¯æ»šåŠ¨ -->
       <el-scrollbar class="sidebar-scroll">
         <el-menu
           :default-active="activeMenu"
@@ -25,85 +26,110 @@
           :collapse-transition="false"
           router
           class="sidebar-menu"
-          background-color="#001529"
-          text-color="#bfcbd9"
+          background-color="transparent"
+          text-color="#303133"
           active-text-color="#409EFF"
         >
-          <!-- ÒÇ±íÅÌ -->
+          <!-- ä»ªè¡¨ç›˜ -->
           <el-menu-item index="/dashboard">
             <el-icon><DataBoard /></el-icon>
-            <template #title>ÒÇ±íÅÌ</template>
+            <template #title>ä»ªè¡¨ç›˜</template>
           </el-menu-item>
 
-          <!-- ÏîÄ¿¹ÜÀí -->
+          <!-- é¡¹ç›®ç®¡ç† -->
           <el-sub-menu index="projects">
             <template #title>
               <el-icon><Collection /></el-icon>
-              <span>ÏîÄ¿¹ÜÀí</span>
+              <span>é¡¹ç›®ç®¡ç†</span>
             </template>
-            <el-menu-item index="/projects"><template #title>ÏîÄ¿ÁĞ±í</template></el-menu-item>
-            <el-menu-item index="/projects/create"><template #title>´´½¨ÏîÄ¿</template></el-menu-item>
-            <el-menu-item index="/projects/categories"><template #title>ÏîÄ¿·ÖÀà</template></el-menu-item>
+            <el-menu-item index="/projects">
+              <template #title>é¡¹ç›®åˆ—è¡¨</template>
+            </el-menu-item>
+            <el-menu-item index="/projects/create">
+              <template #title>åˆ›å»ºé¡¹ç›®</template>
+            </el-menu-item>
+            <el-menu-item index="/projects/categories">
+              <template #title>é¡¹ç›®åˆ†ç±»</template>
+            </el-menu-item>
           </el-sub-menu>
 
-          <!-- ÓÃ»§¹ÜÀí -->
+          <!-- ç”¨æˆ·ç®¡ç† -->
           <el-sub-menu index="users">
             <template #title>
               <el-icon><User /></el-icon>
-              <span>ÓÃ»§¹ÜÀí</span>
+              <span>ç”¨æˆ·ç®¡ç†</span>
             </template>
-            <el-menu-item index="/users"><template #title>ÓÃ»§ÁĞ±í</template></el-menu-item>
-            <el-menu-item index="/users/roles"><template #title>½ÇÉ«È¨ÏŞ</template></el-menu-item>
-            <el-menu-item index="/users/departments"><template #title>²¿ÃÅ¹ÜÀí</template></el-menu-item>
+            <el-menu-item index="/users">
+              <template #title>ç”¨æˆ·åˆ—è¡¨</template>
+            </el-menu-item>
+            <el-menu-item index="/users/roles">
+              <template #title>è§’è‰²æƒé™</template>
+            </el-menu-item>
+            <el-menu-item index="/users/departments">
+              <template #title>éƒ¨é—¨ç®¡ç†</template>
+            </el-menu-item>
           </el-sub-menu>
 
-          <!-- ³ÉÔ±¹ÜÀí -->
+          <!-- æˆå‘˜ç®¡ç† -->
           <el-sub-menu index="members">
             <template #title>
-              <el-icon><Team /></el-icon>
-              <span>³ÉÔ±¹ÜÀí</span>
+              <el-icon><User /></el-icon>
+              <span>æˆå‘˜ç®¡ç†</span>
             </template>
-            <el-menu-item index="/members"><template #title>³ÉÔ±ÁĞ±í</template></el-menu-item>
-            <el-menu-item index="/members/assign"><template #title>·ÖÅä³ÉÔ±</template></el-menu-item>
-            <el-menu-item index="/members/roles"><template #title>³ÉÔ±½ÇÉ«</template></el-menu-item>
+            <el-menu-item index="/members">
+              <template #title>æˆå‘˜åˆ—è¡¨</template>
+            </el-menu-item>
+            <el-menu-item index="/members/assign">
+              <template #title>åˆ†é…æˆå‘˜</template>
+            </el-menu-item>
+            <el-menu-item index="/members/roles">
+              <template #title>æˆå‘˜è§’è‰²</template>
+            </el-menu-item>
           </el-sub-menu>
 
-          <!-- Êı¾İÍ³¼Æ -->
+          <!-- æ•°æ®ç»Ÿè®¡ -->
           <el-sub-menu index="statistics">
             <template #title>
               <el-icon><TrendCharts /></el-icon>
-              <span>Êı¾İÍ³¼Æ</span>
+              <span>æ•°æ®ç»Ÿè®¡</span>
             </template>
-            <el-menu-item index="/statistics/projects"><template #title>ÏîÄ¿Í³¼Æ</template></el-menu-item>
-            <el-menu-item index="/statistics/funding"><template #title>¾­·ÑÍ³¼Æ</template></el-menu-item>
-            <el-menu-item index="/statistics/performance"><template #title>¼¨Ğ§Í³¼Æ</template></el-menu-item>
+            <el-menu-item index="/statistics/projects">
+              <template #title>é¡¹ç›®ç»Ÿè®¡</template>
+            </el-menu-item>
+            <el-menu-item index="/statistics/funding">
+              <template #title>ç»è´¹ç»Ÿè®¡</template>
+            </el-menu-item>
+            <el-menu-item index="/statistics/performance">
+              <template #title>ç»©æ•ˆç»Ÿè®¡</template>
+            </el-menu-item>
           </el-sub-menu>
 
-          <!-- ÏµÍ³ÉèÖÃ -->
+          <!-- ç³»ç»Ÿè®¾ç½® -->
           <el-sub-menu index="system">
             <template #title>
               <el-icon><Setting /></el-icon>
-              <span>ÏµÍ³ÉèÖÃ</span>
+              <span>ç³»ç»Ÿè®¾ç½®</span>
             </template>
-            <el-menu-item index="/system/basic"><template #title>»ù´¡ÉèÖÃ</template></el-menu-item>
-            <el-menu-item index="/system/backup"><template #title>Êı¾İ±¸·İ</template></el-menu-item>
-            <el-menu-item index="/system/logs"><template #title>ÏµÍ³ÈÕÖ¾</template></el-menu-item>
+            <el-menu-item index="/system/basic">
+              <template #title>åŸºç¡€è®¾ç½®</template>
+            </el-menu-item>
+            <el-menu-item index="/system/backup">
+              <template #title>æ•°æ®å¤‡ä»½</template>
+            </el-menu-item>
+            <el-menu-item index="/system/logs">
+              <template #title>ç³»ç»Ÿæ—¥å¿—</template>
+            </el-menu-item>
           </el-sub-menu>
         </el-menu>
       </el-scrollbar>
 
-      <!-- ²à±ßÀ¸Í³¼Æ/¿ì½İÈë¿Ú£¨ÕÛµşÊ±Òş²Ø£© -->
-      <div v-show="!isCollapsed" class="aside-stats-wrap">
-        <QuickStats />
-      </div>
-
-      <!-- ÕÛµş°´Å¥ -->
+      <!-- æŠ˜å æŒ‰é’® -->
       <div class="sidebar-footer">
         <el-button
           link
           @click="toggleCollapse"
           class="collapse-btn"
-          :title="isCollapsed ? 'Õ¹¿ª²Ëµ¥' : 'ÕÛµş²Ëµ¥'"
+          :title="isCollapsed ? 'å±•å¼€èœå•' : 'æŠ˜å èœå•'"
         >
           <el-icon>
             <Expand v-if="isCollapsed" />
@@ -113,9 +139,9 @@
       </div>
     </el-aside>
 
-    <!-- Ö÷ÄÚÈİÇøÓò -->
+    <!-- ä¸»å†…å®¹åŒºåŸŸ -->
     <div class="main-container">
-      <!-- ¶¥²¿µ¼º½£¨µÇÂ¼Ò³Òş²Ø£© -->
+      <!-- é¡¶éƒ¨å¯¼èˆªï¼ˆç™»å½•é¡µéšè—ï¼‰ -->
       <el-header v-if="!hideLayout" class="header">
         <div class="header-left">
           <span class="header-title">{{ currentRouteTitle }}</span>
@@ -123,21 +149,28 @@
         <div class="header-right">
           <el-dropdown @command="handleCommand">
             <span class="user-info">
-              <el-avatar :size="32" :src="userAvatar" class="user-avatar" />
+              <el-avatar :size="32" class="user-avatar" />
               <span class="user-name">{{ userName }}</span>
               <el-icon><ArrowDown /></el-icon>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item command="profile"><el-icon><User /></el-icon>¸öÈË×ÊÁÏ</el-dropdown-item>
-                <el-dropdown-item command="settings"><el-icon><Setting /></el-icon>ÕË»§ÉèÖÃ</el-dropdown-item>
-                <el-dropdown-item divided command="logout"><el-icon><SwitchButton /></el-icon>ÍË³öµÇÂ¼</el-dropdown-item>
+                <el-dropdown-item command="profile">
+                  <el-icon><User /></el-icon>ä¸ªäººèµ„æ–™
+                </el-dropdown-item>
+                <el-dropdown-item command="settings">
+                  <el-icon><Setting /></el-icon>è´¦æˆ·è®¾ç½®
+                </el-dropdown-item>
+                <el-dropdown-item divided command="logout">
+                  <el-icon><SwitchButton /></el-icon>é€€å‡ºç™»å½•
+                </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
         </div>
       </el-header>
 
+      <!-- é¡µé¢å†…å®¹ -->
       <div class="content">
         <router-view />
       </div>
@@ -148,122 +181,271 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import { useDashboardStore } from '@/stores/dashboard'
-import QuickStats from '@/components/QuickStats.vue'
+import { useAuthStore } from '../stores/auth'
 import {
-  DataBoard, Collection, User, Team, TrendCharts, Setting,
-  Expand, Fold, ArrowDown, SwitchButton
+  DataBoard,
+  Collection,
+  User,
+  TrendCharts,
+  Setting,
+  Expand,
+  Fold,
+  ArrowDown,
+  SwitchButton
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
-const dash = useDashboardStore()
 
 const isCollapsed = ref(false)
 
-/** µÇÂ¼Ò³Òş²Ø²àÀ¸ÓëÍ·²¿ */
+/** ç™»å½•é¡µéšè—ä¾§æ ä¸å¤´éƒ¨ */
 const hideLayout = computed(() => route.path === '/login')
 
 const activeMenu = computed(() => route.path)
-const userName = computed(() => authStore.user?.realName || authStore.user?.username || 'ÓÃ»§')
-const userAvatar = computed(() => authStore.user?.avatar || '')
+const userName = computed(
+  () => authStore.user?.realName || authStore.user?.username || 'ç”¨æˆ·'
+)
+
 const currentRouteTitle = computed(() => {
   const titles = {
-    '/dashboard': 'ÒÇ±íÅÌ',
-    '/projects': 'ÏîÄ¿¹ÜÀí',
-    '/projects/create': '´´½¨ÏîÄ¿',
-    '/users': 'ÓÃ»§¹ÜÀí',
-    '/members': '³ÉÔ±¹ÜÀí',
-    '/statistics': 'Êı¾İÍ³¼Æ'
+    '/dashboard': 'ä»ªè¡¨ç›˜',
+    '/projects': 'é¡¹ç›®ç®¡ç†',
+    '/projects/create': 'åˆ›å»ºé¡¹ç›®',
+    '/users': 'ç”¨æˆ·ç®¡ç†',
+    '/members': 'æˆå‘˜ç®¡ç†',
+    '/statistics': 'æ•°æ®ç»Ÿè®¡',
+    '/system/basic': 'ç³»ç»Ÿè®¾ç½®'
   }
-  return titles[route.path] || '¿ÆÑĞ¹ÜÀíÏµÍ³'
+  return titles[route.path] || 'ç§‘ç ”ç®¡ç†ç³»ç»Ÿ'
 })
 
-function toggleCollapse() { isCollapsed.value = !isCollapsed.value }
+function toggleCollapse() {
+  isCollapsed.value = !isCollapsed.value
+}
+
 function handleCommand(cmd) {
   if (cmd === 'profile') router.push('/profile')
   if (cmd === 'settings') router.push('/settings')
-  if (cmd === 'logout') { authStore.logout(); router.push('/login') }
+  if (cmd === 'logout') {
+    authStore.logout()
+    router.push('/login')
+  }
 }
 
 onMounted(() => {
   if (window.innerWidth < 768) isCollapsed.value = true
-  // ²àÀ¸Í³¼ÆÊı¾İ
-  dash.fetchStats()
 })
 </script>
 
 <style scoped>
-.app-layout { display: flex; height: 100vh; background-color: #f0f2f5; }
+/* ===================== å…¨å±€è™šåŒ–èƒŒæ™¯ ===================== */
 
-/* ²à±ßÀ¸ÕûÌå */
-.sidebar {
-  background-color: #001529;
-  display: flex; flex-direction: column;
-  transition: width .3s;
-  box-shadow: 2px 0 6px rgba(0,21,41,.35);
-  overflow: hidden;
+/* æ•´ä¸ªåå°å¤–å±‚å®¹å™¨ */
+.app-layout {
+  display: flex;
   height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
+
+/* ä½¿ç”¨ç™»å½•é¡µèƒŒæ™¯å›¾åšå…¨å±è™šåŒ–èƒŒæ™¯ï¼ˆä¾§è¾¹æ ã€é¡¶éƒ¨ã€å†…å®¹åŒºå…±äº«ï¼‰ */
+.app-layout::before {
+  content: "";
+  position: fixed; /* è¦†ç›–æ•´ä¸ªçª—å£ */
+  inset: 0;
+  background-image: url("/login-bg.jpg.png"); /* public ç›®å½•ä¸‹çš„ç™»å½•èƒŒæ™¯ */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* è™šåŒ– + æäº® + é™é¥±å’Œï¼Œè®©é¢œè‰²æŸ”å’Œä¸åˆºçœ¼ */
+  filter: blur(18px) brightness(1.08) saturate(0.7);
+  opacity: 0.55; /* æ•´ä½“é€æ˜åº¦ï¼Œè¶Šå°è¶Šæ·¡ */
+
+  z-index: -1; /* æ”¾åœ¨æ‰€æœ‰å†…å®¹åé¢ */
+}
+
+/* ===================== ä¾§è¾¹æ  ===================== */
+
+.sidebar {
+  background: rgba(255, 255, 255, 0.82); /* åŠé€æ˜ç™½ */
+  backdrop-filter: blur(14px);            /* æ¯›ç»ç’ƒï¼Œå’ŒèƒŒæ™¯èåˆ */
+  border-right: 1px solid rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  transition: width 0.3s;
+}
+
+/* å·¦ä¸Šè§’ Logo åŒºåŸŸ */
 .sidebar-header {
-  height: 64px; display: flex; align-items: center; justify-content: center;
-  border-bottom: 1px solid #002140;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
 }
-.logo { display: flex; align-items: center; padding: 0 16px; }
-.logo-collapsed { display: flex; align-items: center; justify-content: center; padding: 0 8px; }
-.logo-img { width: 32px; height: 32px; margin-right: 8px; }
-.logo-text { color: #fff; font-size: 18px; font-weight: 600; white-space: nowrap; }
 
-/* ²Ëµ¥Çø£º¿É¹ö¶¯¡¢Õ¼ÂúÖĞ¼ä¿Õ¼ä */
-.sidebar-scroll { flex: 1 1 auto; }
+.logo {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
 
-/* ÉîÉ«²Ëµ¥¸²¸Ç */
-.sidebar :deep(.el-menu) { background-color: #001529; border-right: none; }
-.sidebar :deep(.el-sub-menu__title),
-.sidebar :deep(.el-menu-item) { color: #bfcbd9; }
+.logo-collapsed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+}
+
+.logo-img {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  border-radius: 4px;
+}
+
+.logo-text {
+  color: #303133;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* èœå•å¯æ»šåŠ¨ */
+.sidebar-scroll {
+  flex: 1 1 auto;
+}
+
+/* èœå•æ•´ä½“æµ…è‰² */
+.sidebar :deep(.el-menu) {
+  background-color: transparent;
+  border-right: none;
+}
+
+.sidebar :deep(.el-menu-item),
+.sidebar :deep(.el-sub-menu__title) {
+  color: #303133;
+  font-weight: 500;
+}
+
+/* æ¿€æ´»é¡¹ */
 .sidebar :deep(.el-menu-item.is-active),
-.sidebar :deep(.el-sub-menu.is-active > .el-sub-menu__title) { color: #409EFF; }
+.sidebar :deep(.el-sub-menu.is-active > .el-sub-menu__title) {
+  color: #409eff;
+  background-color: rgba(64, 158, 255, 0.12);
+}
+
+/* hover æ•ˆæœ */
 .sidebar :deep(.el-menu-item:hover),
-.sidebar :deep(.el-sub-menu__title:hover) { background-color: #0a2740; }
-
-/* Í³¼ÆÇø£¨²»¼·Õ¼²Ëµ¥¸ß¶È£© */
-.aside-stats-wrap {
-  flex: 0 0 auto;
-  background: #001a2a;
-  border-top: 1px solid #002140;
-  padding-bottom: 8px;
+.sidebar :deep(.el-sub-menu__title:hover) {
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
-/* µ×²¿ÕÛµş°´Å¥ */
+/* æŠ˜å æŒ‰é’® */
 .sidebar-footer {
-  height: 48px; display: flex; align-items: center; justify-content: center;
-  border-top: 1px solid #002140;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
 }
-.collapse-btn { color: #bfcbd9; font-size: 16px; }
-.collapse-btn:hover { color: #409EFF; }
 
-/* Ö÷ÄÚÈİÇøÓò */
-.main-container { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.collapse-btn {
+  color: #606266;
+  font-size: 16px;
+}
+
+.collapse-btn:hover {
+  color: #409eff;
+}
+
+/* ===================== é¡¶éƒ¨å¯¼èˆª ===================== */
+
+.main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .header {
-  height: 64px; background: #fff; display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; box-shadow: 0 1px 4px rgba(0,21,41,.08); z-index: 10;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.86); /* åŠé€æ˜ç™½ + æ¯›ç»ç’ƒ */
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  z-index: 1;
 }
-.header-title { font-size: 20px; font-weight: 600; color: #303133; }
-.user-info { display: flex; align-items: center; cursor: pointer; padding: 8px 12px; border-radius: 6px; transition: background-color .3s; }
-.user-info:hover { background-color: #f5f7fa; }
-.user-avatar { margin-right: 8px; }
-.user-name { margin-right: 8px; color: #303133; font-weight: 500; }
 
-.content { flex: 1; padding: 24px; overflow: auto; background-color: #f0f2f5; }
+.header-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #303133;
+}
 
-/* Ğ¡ÆÁÄ¬ÈÏÕÛµş */
+.user-info {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+.user-info:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.user-avatar {
+  margin-right: 8px;
+}
+
+.user-name {
+  margin-right: 8px;
+  color: #303133;
+  font-weight: 500;
+}
+
+/* ===================== å†…å®¹åŒºåŸŸ ===================== */
+
+.content {
+  flex: 1;
+  padding: 24px;
+  overflow: auto;
+  background: transparent; /* è®©ä¸‹é¢çš„è™šåŒ–èƒŒæ™¯é€å‡ºæ¥ */
+}
+
+/* å°å±é€‚é… */
 @media (max-width: 768px) {
-  .sidebar { position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000; }
-  .main-container { margin-left: 64px; }
-  .header { padding: 0 16px; }
-  .content { padding: 16px; }
-  .user-name { display: none; }
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
+  }
+
+  .main-container {
+    margin-left: 64px;
+  }
+
+  .header {
+    padding: 0 16px;
+  }
+
+  .content {
+    padding: 16px;
+  }
+
+  .user-name {
+    display: none;
+  }
 }
 </style>
