@@ -4,12 +4,15 @@ import { useAuthStore } from '../stores/auth'
 
 // 创建axios实例
 const request = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
+    // ⭐ 开发环境：统一走 Vite 代理，避免跨域
+    // 不要再写 http://localhost:8080
+    baseURL: '/api',
     timeout: 15000,
     headers: {
         'Content-Type': 'application/json'
     }
 })
+
 
 // 请求拦截器
 request.interceptors.request.use(
