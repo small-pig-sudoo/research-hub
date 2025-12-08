@@ -1,10 +1,13 @@
 package com.univ.researchhub.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.univ.researchhub.entity.Project;
 import com.univ.researchhub.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -35,7 +38,8 @@ public class ProjectController {
             if (success) {
                 return ResponseEntity.ok(buildResponse(true, "项目创建成功", project));
             } else {
-                return ResponseEntity.badRequest().body(buildResponse(false, "项目创建失败（参数校验未通过）", null));
+                return ResponseEntity.badRequest()
+                        .body(buildResponse(false, "项目创建失败（参数校验未通过）", null));
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -51,7 +55,8 @@ public class ProjectController {
             if (project != null) {
                 return ResponseEntity.ok(buildResponse(true, "查询成功", project));
             } else {
-                return ResponseEntity.badRequest().body(buildResponse(false, "项目不存在", null));
+                return ResponseEntity.badRequest()
+                        .body(buildResponse(false, "项目不存在", null));
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -93,7 +98,8 @@ public class ProjectController {
             if (success) {
                 return ResponseEntity.ok(buildResponse(true, "状态更新成功", null));
             } else {
-                return ResponseEntity.badRequest().body(buildResponse(false, "状态更新失败（项目不存在或状态无效）", null));
+                return ResponseEntity.badRequest()
+                        .body(buildResponse(false, "状态更新失败（项目不存在或状态无效）", null));
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -107,6 +113,61 @@ public class ProjectController {
         try {
             List<Project> projects = projectService.getValidProjectsByType(type);
             return ResponseEntity.ok(buildResponse(true, "查询成功", projects));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(buildResponse(false, "查询失败：" + e.getMessage(), null));
+        }
+    }
+
+    /**
+     * 7. 仪表盘 - 最近项目（按开始时间倒序，取最近5条）
+     */
+    @GetMapping("/recent")
+    public ResponseEntity<Map<String, Object>> getRecentProjects() {
+        try {
+            List<Project> projects = projectService.getRecentProjects(5);
+            return ResponseEntity.ok(buildResponse(true, "查询成功", projects));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(buildResponse(false, "查询失败：" + e.getMessage(), null));
+        }
+    }
+
+    /**
+     * 8. 项目列表（分页 + 筛选）
+     *    GET /api/project/list?pageNum=1&pageSize=10&name=...&projectType=...&status=...
+     */
+    @GetMapping("/list")
+    public ResponseEntity<Map<String, Object>> listProjects(
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "projectType", required = false) String projectType,
+            @RequestParam(value = "status", required = false) String status
+    ) {
+        try {
+            LambdaQueryWrapper<Project> wrapper = new LambdaQueryWrapper<>();
+
+            if (StringUtils.hasText(name)) {
+                wrapper.like(Project::getName, name);
+            }
+            if (StringUtils.hasText(projectType)) {
+                wrapper.eq(Project::getProjectType, projectType);
+            }
+            if (StringUtils.hasText(status)) {
+                wrapper.eq(Project::getStatus, status);
+            }
+
+            Page<Project> page = new Page<>(pageNum, pageSize);
+            projectService.page(page, wrapper);
+
+            Map<String, Object> pageData = new HashMap<>();
+            pageData.put("records", page.getRecords());
+            pageData.put("total", page.getTotal());
+            pageData.put("current", page.getCurrent());
+            pageData.put("size", page.getSize());
+
+            return ResponseEntity.ok(buildResponse(true, "查询成功", pageData));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(buildResponse(false, "查询失败：" + e.getMessage(), null));

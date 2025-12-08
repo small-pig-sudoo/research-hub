@@ -28,4 +28,8 @@ public interface PaperService extends IService<Paper> {
 
     // 6. 查询指定日期范围内的论文
     List<Paper> getPapersByDateRange(Date startDate, Date endDate);
+    /**
+     * 仪表盘使用：按开始时间倒序，取最近 N 条项目
+     */
+
 }

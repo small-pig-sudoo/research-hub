@@ -144,4 +144,12 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     private void logError(String message) {
         System.err.println("[ProjectService] " + message);
     }
+
+    @Override
+    public List<Project> getRecentProjects(int limit) {
+        LambdaQueryWrapper<Project> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(Project::getStartDate)
+                .last("LIMIT " + limit);
+        return projectMapper.selectList(wrapper);
+    }
 }

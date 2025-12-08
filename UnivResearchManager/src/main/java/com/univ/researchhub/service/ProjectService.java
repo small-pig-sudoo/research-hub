@@ -28,4 +28,6 @@ public interface ProjectService extends IService<Project> {
 
     // 6. 校验项目预算是否合理（如不能为负数）
     boolean isFundingValid(BigDecimal funding);
+    List<Project> getRecentProjects(int limit);
+
 }
