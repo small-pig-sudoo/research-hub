@@ -1,626 +1,519 @@
 <template>
-  <div class="project-list-container">
-    <!-- 页面标题和操作 -->
-    <div class="page-header">
-      <div class="header-content">
-        <div class="title-section">
-          <h1 class="page-title">科研项目管理</h1>
-          <p class="page-subtitle">管理您的科研项目信息</p>
-        </div>
-        <el-button type="primary" class="create-btn" @click="handleCreate">
-          <el-icon><Plus /></el-icon>
+  <div class="page-wrapper">
+    <!-- 顶部标题 -->
+    <el-card class="page-header" shadow="never">
+      <div class="header-left">
+        <div class="title">科研项目管理</div>
+        <div class="sub-title">管理您的科研项目信息</div>
+      </div>
+      <div class="header-right">
+        <el-button type="primary" @click="$router.push('/projects/create')">
           新增项目
         </el-button>
       </div>
-    </div>
+    </el-card>
 
-    <!-- 搜索筛选区域 -->
-    <el-card class="filter-section" shadow="never">
+    <!-- 筛选条件 -->
+    <el-card class="filter-card" shadow="never">
       <div class="filter-header">
-        <h3 class="filter-title">筛选条件</h3>
-        <div class="filter-actions">
-          <el-button @click="resetFilter">重置</el-button>
-          <el-button type="primary" @click="loadProjects">
-            <el-icon><Search /></el-icon>
-            搜索
-          </el-button>
-        </div>
+        <span class="filter-title">筛选条件</span>
       </div>
-      
-      <el-form :model="filterForm" class="filter-form">
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="12" :md="8" :lg="6">
-            <el-form-item label="项目名称">
-              <el-input 
-                v-model="filterForm.name" 
-                placeholder="输入项目名称" 
-                clearable
-                size="large"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="6">
-            <el-form-item label="项目类型">
-              <el-select 
-                v-model="filterForm.type" 
-                placeholder="选择类型" 
-                clearable
-                size="large"
-                style="width: 100%"
-              >
-                <el-option label="国家级" value="NATIONAL" />
-                <el-option label="省部级" value="PROVINCIAL" />
-                <el-option label="校级" value="SCHOOL" />
-                <el-option label="横向项目" value="HORIZONTAL" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="6">
-            <el-form-item label="项目状态">
-              <el-select 
-                v-model="filterForm.status" 
-                placeholder="选择状态" 
-                clearable
-                size="large"
-                style="width: 100%"
-              >
-                <el-option label="申报中" value="APPLICATION" />
-                <el-option label="在研" value="ONGOING" />
-                <el-option label="已结题" value="CONCLUSION" />
-                <el-option label="已终止" value="TERMINATED" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
+      <el-form :inline="true" :model="query" class="filter-form">
+        <el-form-item label="项目名称">
+          <el-input
+            v-model="query.name"
+            placeholder="输入项目名称"
+            clearable
+            style="width: 220px"
+          />
+        </el-form-item>
+
+        <el-form-item label="项目类型">
+          <el-select
+            v-model="query.projectType"
+            placeholder="选择类型"
+            clearable
+            style="width: 180px"
+          >
+            <el-option label="国家级" value="国家级" />
+            <el-option label="省部级" value="省部级" />
+            <el-option label="校级" value="校级" />
+            <el-option label="其他" value="其他" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="项目状态">
+          <el-select
+            v-model="query.status"
+            placeholder="选择状态"
+            clearable
+            style="width: 160px"
+          >
+            <el-option label="未开始" value="未开始" />
+            <el-option label="进行中" value="进行中" />
+            <el-option label="已结项" value="已结项" />
+            <el-option label="暂停" value="暂停" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item class="filter-actions">
+          <el-button type="primary" @click="handleSearch">搜索</el-button>
+          <el-button @click="handleReset">重置</el-button>
+        </el-form-item>
       </el-form>
     </el-card>
 
-    <!-- 项目表格 -->
-    <el-card class="table-section" shadow="never">
-      <div class="table-header">
-        <div class="table-info">
-          <span class="total-text">共 {{ pagination.total }} 个项目</span>
+    <!-- 表格 + 分页 -->
+    <el-card class="table-card" shadow="never">
+      <div class="table-header-row">
+        <div class="table-title">
+          共 <span class="table-count">{{ pagination.total }}</span> 个项目
         </div>
         <div class="table-actions">
-          <el-button text @click="exportData">
-            <el-icon><Download /></el-icon>
-            导出
-          </el-button>
-          <el-button text @click="refreshData">
-            <el-icon><Refresh /></el-icon>
-            刷新
-          </el-button>
+          <el-button text @click="handleRefresh">刷新</el-button>
+          <el-button text>导出</el-button>
         </div>
       </div>
 
-      <el-table 
-        :data="projects" 
-        v-loading="loading"
-        class="project-table"
-        :header-cell-style="{ backgroundColor: '#f8f9fa', color: '#606266' }"
-      >
-        <el-table-column type="index" label="序号" width="80" align="center" />
-        <el-table-column prop="projectId" label="项目编号" width="130" />
-        <el-table-column prop="name" label="项目名称" min-width="240">
-          <template #default="scope">
-            <div class="project-name-cell">
-              <span class="project-name">{{ scope.row.name }}</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="type" label="类型" width="100" align="center">
-          <template #default="scope">
-            <el-tag 
-              :type="getTypeTag(scope.row.type)" 
-              size="small"
-              class="type-tag"
-            >
-              {{ getTypeText(scope.row.type) }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="principal" label="负责人" width="120" align="center" />
-        <el-table-column prop="status" label="状态" width="100" align="center">
-          <template #default="scope">
-            <el-tag 
-              :type="getStatusTag(scope.row.status)" 
-              size="small"
-              class="status-tag"
-            >
-              {{ getStatusText(scope.row.status) }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="totalFunding" label="经费(元)" width="140" align="right">
-          <template #default="scope">
-            <span class="funding-amount">{{ formatFunding(scope.row.totalFunding) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="startDate" label="开始日期" width="120" align="center" />
-        <el-table-column prop="expectedEndDate" label="预期结题" width="120" align="center" />
-        <el-table-column label="操作" width="180" fixed="right" align="center">
-          <template #default="scope">
-            <div class="action-buttons">
-              <el-tooltip content="查看详情" placement="top">
-                <el-button 
-                  size="small" 
-                  text 
-                  class="action-btn view-btn"
-                  @click="handleView(scope.row)"
-                >
-                  <el-icon><View /></el-icon>
-                </el-button>
-              </el-tooltip>
-              <el-tooltip content="编辑项目" placement="top">
-                <el-button 
-                  size="small" 
-                  text 
-                  class="action-btn edit-btn"
-                  @click="handleEdit(scope.row)"
-                >
-                  <el-icon><Edit /></el-icon>
-                </el-button>
-              </el-tooltip>
-              <el-tooltip content="删除项目" placement="top">
-                <el-button 
-                  size="small" 
-                  text 
-                  class="action-btn delete-btn"
-                  @click="handleDelete(scope.row)"
-                >
-                  <el-icon><Delete /></el-icon>
-                </el-button>
-              </el-tooltip>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="table-wrapper">
+        <el-table
+          v-loading="loading"
+          :data="tableData"
+          class="project-table"
+          :border="false"
+          stripe
+          header-cell-class-name="table-header-cell"
+        >
+          <el-table-column
+            type="index"
+            label="序号"
+            width="70"
+            align="center"
+          />
 
-      <!-- 空状态 -->
-      <div v-if="projects.length === 0 && !loading" class="empty-state">
-        <el-empty description="暂无项目数据" :image-size="200">
-          <el-button type="primary" @click="handleCreate">创建第一个项目</el-button>
-        </el-empty>
+          <el-table-column
+            prop="projectId"
+            label="项目编号"
+            width="110"
+            align="center"
+          />
+
+          <el-table-column
+            prop="name"
+            label="项目名称"
+            min-width="260"
+            show-overflow-tooltip
+          />
+
+          <el-table-column
+            prop="projectType"
+            label="类型"
+            width="100"
+            align="center"
+          >
+            <template #default="{ row }">
+              <el-tag
+                v-if="row.projectType"
+                :type="typeTagType(row.projectType)"
+                effect="light"
+              >
+                {{ row.projectType }}
+              </el-tag>
+              <span v-else>-</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="status"
+            label="状态"
+            width="100"
+            align="center"
+          >
+            <template #default="{ row }">
+              <el-tag
+                v-if="row.status"
+                :type="statusTagType(row.status)"
+                effect="plain"
+              >
+                {{ row.status }}
+              </el-tag>
+              <span v-else>-</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="leaderId"
+            label="负责人ID"
+            width="110"
+            align="center"
+          />
+
+          <el-table-column
+            prop="funding"
+            label="经费(万)"
+            width="110"
+            align="right"
+          >
+            <template #default="{ row }">
+              <span v-if="row.funding != null">
+                {{ Number(row.funding).toFixed(1) }}
+              </span>
+              <span v-else>-</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="startDate"
+            label="开始日期"
+            width="130"
+            align="center"
+          >
+            <template #default="{ row }">
+              {{ formatDate(row.startDate) }}
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="endDate"
+            label="结束日期"
+            width="130"
+            align="center"
+          >
+            <template #default="{ row }">
+              {{ formatDate(row.endDate) }}
+            </template>
+          </el-table-column>
+
+<el-table-column
+  label="操作"
+  width="180"
+  fixed="right"
+  align="center"
+>
+  <template #default="{ row }">
+    <div class="action-cell">
+      <el-button size="small" link type="primary">
+        查看
+      </el-button>
+      <el-button size="small" link type="primary">
+        编辑
+      </el-button>
+      <el-button size="small" link type="danger">
+        删除
+      </el-button>
+    </div>
+  </template>
+</el-table-column>
+        </el-table>
       </div>
 
-      <!-- 分页 -->
-      <div class="pagination-container" v-if="projects.length > 0">
-        <el-pagination
-          v-model:current-page="pagination.current"
-          v-model:page-size="pagination.size"
-          :total="pagination.total"
-          :page-sizes="[10, 20, 50, 100]"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="loadProjects"
-          @current-change="loadProjects"
-          class="custom-pagination"
-        />
+      <div class="table-footer">
+        <div class="footer-left"></div>
+        <div class="footer-right">
+          <el-pagination
+            background
+            layout="total, sizes, prev, pager, next, jumper"
+            :current-page="pagination.page"
+            :page-size="pagination.pageSize"
+            :total="pagination.total"
+            :page-sizes="[5, 10, 20, 50]"
+            @size-change="handleSizeChange"
+            @current-change="handlePageChange"
+          />
+        </div>
       </div>
     </el-card>
+
   </div>
 </template>
 
-<script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { 
-  Plus, Search, Download, Refresh, View, Edit, Delete 
-} from '@element-plus/icons-vue'
+<script>
+import { getProjects } from '../api/project'
+import { ElMessage } from 'element-plus'
 
-const router = useRouter()
+export default {
+  name: 'ProjectList',
 
-const loading = ref(false)
-const projects = ref([])
-
-const filterForm = reactive({
-  name: '',
-  type: '',
-  status: ''
-})
-
-const pagination = reactive({
-  current: 1,
-  size: 10,
-  total: 0
-})
-
-onMounted(() => {
-  loadProjects()
-})
-
-async function loadProjects() {
-  loading.value = true
-  try {
-    // 模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 800))
-    
-    // 模拟数据
-    projects.value = [
-      {
-        id: 1,
-        projectId: 'RH2024001',
-        name: '人工智能在科研管理中的应用研究',
-        type: 'NATIONAL',
-        principal: '张教授',
-        status: 'ONGOING',
-        totalFunding: 500000,
-        startDate: '2024-01-01',
-        expectedEndDate: '2026-12-31'
+  data() {
+    return {
+      loading: false,
+      // 查询条件
+      query: {
+        name: '',
+        projectType: '',
+        status: ''
       },
-      {
-        id: 2,
-        projectId: 'RH2024002',
-        name: '高校科研成果转化机制研究',
-        type: 'PROVINCIAL',
-        principal: '李教授',
-        status: 'ONGOING',
-        totalFunding: 300000,
-        startDate: '2024-03-01',
-        expectedEndDate: '2025-12-31'
-      },
-      {
-        id: 3,
-        projectId: 'RH2024003',
-        name: '跨学科科研团队建设研究',
-        type: 'SCHOOL',
-        principal: '王教授',
-        status: 'APPLICATION',
-        totalFunding: 100000,
-        startDate: '2024-06-01',
-        expectedEndDate: '2026-05-31'
+      // 当前页表格数据
+      tableData: [],
+      // 分页信息（与后端保持一致）
+      pagination: {
+        page: 1,
+        pageSize: 10,
+        total: 0
       }
-    ]
-    pagination.total = 3
-  } catch (error) {
-    ElMessage.error('加载项目列表失败')
-  } finally {
-    loading.value = false
-  }
-}
+    }
+  },
 
-function resetFilter() {
-  Object.assign(filterForm, {
-    name: '',
-    type: '',
-    status: ''
-  })
-  loadProjects()
-}
+  created() {
+    this.fetchProjects()
+  },
 
-function handleCreate() {
-  router.push('/projects/create')
-}
+  methods: {
+    // 从后端加载项目列表（带分页和筛选条件）
+    async fetchProjects() {
+      this.loading = true
+      try {
+        const params = {
+          pageNum: this.pagination.page,
+          pageSize: this.pagination.pageSize,
+          name: this.query.name || undefined,
+          projectType: this.query.projectType || undefined,
+          status: this.query.status || undefined
+        }
 
-function handleView(project) {
-  router.push(`/projects/${project.id}`)
-}
+        const res = await getProjects(params)
 
-function handleEdit(project) {
-  router.push(`/projects/${project.id}/edit`)
-}
+        let data = res
+        // 兼容 { success, data: {...} } 这种结果
+        if (res && typeof res === 'object' && 'success' in res) {
+          data = res.data
+        }
 
-async function handleDelete(project) {
-  try {
-    await ElMessageBox.confirm(
-      `确定删除项目 "${project.name}" 吗？此操作不可恢复。`,
-      '删除确认',
-      {
-        confirmButtonText: '确定删除',
-        cancelButtonText: '取消',
-        type: 'warning',
-        confirmButtonClass: 'delete-confirm-btn',
-        customClass: 'delete-confirm-dialog'
+        if (Array.isArray(data)) {
+          this.tableData = data
+          this.pagination.total = data.length
+        } else if (data && typeof data === 'object') {
+          this.tableData = data.records || data.list || []
+          this.pagination.total = data.total || this.tableData.length
+        } else {
+          this.tableData = []
+          this.pagination.total = 0
+        }
+      } catch (err) {
+        console.error('加载项目列表失败:', err)
+        ElMessage.error('加载项目列表失败，请检查后端服务')
+      } finally {
+        this.loading = false
       }
-    )
-    
-    // 模拟删除
-    await new Promise(resolve => setTimeout(resolve, 500))
-    ElMessage.success('删除成功')
-    loadProjects()
-  } catch (error) {
-    // 用户取消删除
+    },
+
+    handleSearch() {
+      this.pagination.page = 1
+      this.fetchProjects()
+    },
+
+    handleReset() {
+      this.query = {
+        name: '',
+        projectType: '',
+        status: ''
+      }
+      this.pagination.page = 1
+      this.fetchProjects()
+    },
+
+    handlePageChange(page) {
+      this.pagination.page = page
+      this.fetchProjects()
+    },
+
+    handleSizeChange(size) {
+      this.pagination.pageSize = size
+      this.pagination.page = 1
+      this.fetchProjects()
+    },
+
+    handleRefresh() {
+      this.fetchProjects()
+    },
+
+    // 类型颜色
+    typeTagType(type) {
+      switch (type) {
+        case '国家级':
+          return 'danger'
+        case '省部级':
+          return 'warning'
+        case '校级':
+          return 'success'
+        default:
+          return ''
+      }
+    },
+
+    // 状态颜色
+    statusTagType(status) {
+      switch (status) {
+        case '进行中':
+          return 'success'
+        case '未开始':
+          return 'info'
+        case '已结项':
+          return ''
+        case '暂停':
+          return 'warning'
+        default:
+          return 'info'
+      }
+    },
+
+    // 简单日期格式化：只取 yyyy-MM-dd
+    formatDate(val) {
+      if (!val) return '-'
+      const d = new Date(val)
+      if (Number.isNaN(d.getTime())) return '-'
+      const y = d.getFullYear()
+      const m = String(d.getMonth() + 1).padStart(2, '0')
+      const day = String(d.getDate()).padStart(2, '0')
+      return `${y}-${m}-${day}`
+    }
   }
-}
-
-function exportData() {
-  ElMessage.info('导出功能开发中...')
-}
-
-function refreshData() {
-  loadProjects()
-  ElMessage.success('数据已刷新')
-}
-
-function getTypeTag(type) {
-  const typeMap = {
-    'NATIONAL': 'danger',
-    'PROVINCIAL': 'warning',
-    'SCHOOL': 'success',
-    'HORIZONTAL': 'info'
-  }
-  return typeMap[type] || 'info'
-}
-
-function getTypeText(type) {
-  const typeTextMap = {
-    'NATIONAL': '国家级',
-    'PROVINCIAL': '省部级',
-    'SCHOOL': '校级',
-    'HORIZONTAL': '横向项目'
-  }
-  return typeTextMap[type] || type
-}
-
-function getStatusTag(status) {
-  const statusMap = {
-    'APPLICATION': 'info',
-    'ONGOING': 'success',
-    'CONCLUSION': 'warning',
-    'TERMINATED': 'danger'
-  }
-  return statusMap[status] || 'info'
-}
-
-function getStatusText(status) {
-  const statusTextMap = {
-    'APPLICATION': '申报中',
-    'ONGOING': '在研',
-    'CONCLUSION': '已结题',
-    'TERMINATED': '已终止'
-  }
-  return statusTextMap[status] || status
-}
-
-function formatFunding(amount) {
-  if (!amount) return '0'
-  return amount.toLocaleString('zh-CN')
 }
 </script>
 
 <style scoped>
-.project-list-container {
-  padding: 0;
-  background-color: #f5f7fa;
+.page-wrapper {
+  padding: 16px 18px 24px;
+  background: #f5f7fb;
   min-height: calc(100vh - 60px);
+  box-sizing: border-box;
 }
 
-/* 页面标题区域 */
+/* 顶部标题卡片 */
 .page-header {
-  background: white;
-  padding: 24px;
-  border-bottom: 1px solid #e4e7ed;
-}
-
-.header-content {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  max-width: 1200px;
-  margin: 0 auto;
+  align-items: center;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
 }
 
-.title-section .page-title {
-  margin: 0 0 8px 0;
-  font-size: 24px;
+.header-left .title {
+  font-size: 20px;
   font-weight: 600;
   color: #303133;
 }
 
-.title-section .page-subtitle {
-  margin: 0;
+.header-left .sub-title {
+  margin-top: 4px;
+  font-size: 13px;
   color: #909399;
-  font-size: 14px;
 }
 
-.create-btn {
-  height: 40px;
-  padding: 0 20px;
-  font-weight: 500;
-}
-
-/* 筛选区域 */
-.filter-section {
-  margin: 16px;
-  border-radius: 8px;
-  border: 1px solid #e4e7ed;
+/* 筛选卡片 */
+.filter-card {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
 }
 
 .filter-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #f0f2f5;
+  margin-bottom: 8px;
 }
 
 .filter-title {
-  margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: #303133;
 }
 
-.filter-actions {
-  display: flex;
-  gap: 12px;
-}
-
 .filter-form {
-  margin-top: 8px;
-}
-
-/* 表格区域 */
-.table-section {
-  margin: 16px;
-  border-radius: 8px;
-  border: 1px solid #e4e7ed;
-}
-
-.table-header {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 20px;
-  padding: 0 4px;
 }
 
-.total-text {
-  color: #606266;
+.filter-form :deep(.el-form-item) {
+  margin-right: 16px;
+  margin-bottom: 8px;
+}
+
+.filter-actions {
+  margin-left: auto;
+}
+
+/* 表格卡片整体 */
+.table-card {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03);
+}
+
+.table-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.table-title {
   font-size: 14px;
-  font-weight: 500;
+  color: #606266;
+}
+
+.table-count {
+  font-weight: 600;
+  color: #303133;
 }
 
 .table-actions {
   display: flex;
-  gap: 8px;
+  gap: 4px;
 }
 
-/* 表格样式 */
+/* 表格本体 */
+.table-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
 .project-table {
   width: 100%;
 }
 
-.project-table :deep(.el-table__header-wrapper) {
-  border-radius: 8px 8px 0 0;
+/* 表头更柔和的背景 */
+:deep(.table-header-cell) {
+  background: #f5f7fa !important;
+  color: #606266;
+  font-weight: 600;
 }
 
-.project-table :deep(.el-table__row) {
-  transition: background-color 0.2s;
+/* 去掉表格外层多余边框，只保留行分隔线 */
+:deep(.el-table) {
+  border-radius: 12px;
 }
 
-.project-table :deep(.el-table__row:hover) {
-  background-color: #f5f7fa;
+:deep(.el-table__inner-wrapper::before) {
+  display: none;
 }
 
-.project-name-cell {
+/* 行 hover 高亮 */
+:deep(.el-table__body-wrapper tr:hover > td) {
+  background-color: #f0f5ff !important;
+}
+
+/* 分页区 */
+.table-footer {
+  margin-top: 16px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
-.project-name {
-  font-weight: 500;
-  color: #303133;
-  line-height: 1.4;
-}
-
-.type-tag,
-.status-tag {
-  font-weight: 500;
-  border: none;
-  border-radius: 12px;
-  padding: 4px 8px;
-}
-
-.funding-amount {
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-weight: 600;
-  color: #e6a23c;
-}
-
-/* 操作按钮 */
-.action-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-}
-
-.action-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  transition: all 0.2s;
-}
-
-.view-btn {
-  color: #409eff;
-}
-
-.view-btn:hover {
-  background-color: rgba(64, 158, 255, 0.1);
-  color: #409eff;
-}
-
-.edit-btn {
-  color: #67c23a;
-}
-
-.edit-btn:hover {
-  background-color: rgba(103, 194, 58, 0.1);
-  color: #67c23a;
-}
-
-.delete-btn {
-  color: #f56c6c;
-}
-
-.delete-btn:hover {
-  background-color: rgba(245, 108, 108, 0.1);
-  color: #f56c6c;
-}
-
-/* 空状态 */
-.empty-state {
-  padding: 60px 0;
-}
-
-/* 分页 */
-.pagination-container {
-  margin-top: 24px;
+.footer-right {
   display: flex;
   justify-content: flex-end;
+  flex: 1;
+}
+.action-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
 }
 
-.custom-pagination {
-  padding: 16px 0;
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .page-header {
-    padding: 16px;
-  }
-  
-  .header-content {
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .filter-section,
-  .table-section {
-    margin: 8px;
-  }
-  
-  .filter-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  
-  .table-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  
-  .action-buttons {
-    justify-content: flex-start;
-  }
-}
-
-/* 删除确认对话框样式 */
-:deep(.delete-confirm-dialog) {
-  border-radius: 12px;
-}
-
-:deep(.delete-confirm-btn) {
-  background-color: #f56c6c;
-  border-color: #f56c6c;
-}
-
-:deep(.delete-confirm-btn:hover) {
-  background-color: #f78989;
-  border-color: #f78989;
-}
 </style>
