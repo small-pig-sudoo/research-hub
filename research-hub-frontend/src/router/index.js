@@ -3,6 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import Dashboard from '../views/Dashboard.vue'
 import ProjectList from '../views/ProjectList.vue'
+import ProjectForm from '../views/ProjectForm.vue' // ⭐ 新增：创建项目页面
 
 /**
  * 占位页面组件：先让所有菜单可以打开页面，后面你需要哪个模块，
@@ -24,7 +25,8 @@ const routes = [
 
   // ===== 项目管理 =====
   { path: '/projects', component: ProjectList, meta: { requiresAuth: true } },
-  { path: '/projects/create', component: Placeholder, meta: { requiresAuth: true } },
+  // ⭐ 这里改成真正的 ProjectForm 组件
+  { path: '/projects/create', component: ProjectForm, meta: { requiresAuth: true } },
   { path: '/projects/categories', component: Placeholder, meta: { requiresAuth: true } },
 
   // ===== 用户管理 =====

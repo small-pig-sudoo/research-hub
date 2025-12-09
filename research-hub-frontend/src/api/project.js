@@ -1,8 +1,11 @@
 import request from '../utils/request'
 
+const prefix = '/project'
+
+// 获取项目列表（分页）
 export async function getProjects(params = {}) {
     return request({
-        url: '/project/list',    // => 实际请求 /api/project/list
+        url: `${prefix}/list`,
         method: 'get',
         params
     })
@@ -11,7 +14,7 @@ export async function getProjects(params = {}) {
 // 查询单个项目详情
 export async function getProject(id) {
     return request({
-        url: `${prefix}/${id}`,   // => /api/project/{id}
+        url: `${prefix}/${id}`,
         method: 'get'
     })
 }
@@ -19,7 +22,7 @@ export async function getProject(id) {
 // 新建项目
 export async function createProject(projectData) {
     return request({
-        url: `${prefix}`,         // => /api/project
+        url: `${prefix}`,
         method: 'post',
         data: projectData
     })
@@ -28,7 +31,7 @@ export async function createProject(projectData) {
 // 更新项目
 export async function updateProject(id, projectData) {
     return request({
-        url: `${prefix}/${id}`,   // => /api/project/{id}
+        url: `${prefix}/${id}`,
         method: 'put',
         data: projectData
     })
@@ -37,15 +40,15 @@ export async function updateProject(id, projectData) {
 // 删除项目
 export async function deleteProject(id) {
     return request({
-        url: `${prefix}/${id}`,   // => /api/project/{id}
+        url: `${prefix}/${id}`,
         method: 'delete'
     })
 }
 
-// 仪表盘/统计用（如果后端有这个接口）
+// 仪表盘统计（如果有）
 export async function getProjectStats() {
     return request({
-        url: `${prefix}/stats`,   // => /api/project/stats
+        url: `${prefix}/stats`,
         method: 'get'
     })
 }

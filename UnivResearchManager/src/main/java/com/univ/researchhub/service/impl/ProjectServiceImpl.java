@@ -133,8 +133,8 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         if (status == null) {
             return false;
         }
-        // 假设合法状态为：未开始、进行中、已结项、暂停
-        List<String> validStatus = List.of("未开始", "进行中", "已结项", "暂停");
+        // ⭐ 和 project.status 的 enum 完全对齐
+        List<String> validStatus = List.of("申报中", "在研", "已结题", "已终止");
         return validStatus.contains(status);
     }
 

@@ -10,7 +10,7 @@
               <el-breadcrumb-item>项目详情</el-breadcrumb-item>
             </el-breadcrumb>
           </div>
-          <h1 class="page-title">{{ project.name }}</h1>
+          <h1 class="page-title">{{ project.name || '项目详情' }}</h1>
           <div class="project-meta">
             <el-tag :type="getTypeTag(project.type)" size="small">
               {{ getTypeText(project.type) }}
@@ -18,7 +18,7 @@
             <el-tag :type="getStatusTag(project.status)" size="small">
               {{ getStatusText(project.status) }}
             </el-tag>
-            <span class="project-id">项目编号：{{ project.projectId }}</span>
+            <span class="project-id" v-if="project.projectId">项目编号：{{ project.projectId }}</span>
           </div>
         </div>
         <div class="header-actions">
@@ -41,7 +41,7 @@
             <span class="card-title">基本信息</span>
           </div>
         </template>
-        
+
         <el-descriptions :column="2" border>
           <el-descriptions-item label="项目名称">{{ project.name }}</el-descriptions-item>
           <el-descriptions-item label="项目编号">{{ project.projectId }}</el-descriptions-item>
@@ -85,7 +85,7 @@
             <el-step title="在研" description="项目研究阶段" />
             <el-step title="结题" description="项目结题阶段" />
           </el-steps>
-          
+
           <div class="progress-stats">
             <div class="stat-item">
               <div class="stat-label">已进行时间</div>
@@ -150,7 +150,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Download } from '@element-plus/icons-vue'
@@ -160,12 +160,12 @@ const route = useRoute()
 
 const loading = ref(false)
 
-// 项目数据
+// 项目数据（当前仍是本地模拟数据，后续可接后端）
 const project = reactive({
   name: '',
   projectId: '',
-  type: '',
-  status: '',
+  type: '',          // 对应数据库 project_type：国家级/省部级/校级/横向项目/其他
+  status: '',        // 对应数据库 status：申报中/在研/已结题/已终止
   principal: '',
   totalFunding: 0,
   startDate: '',
@@ -175,7 +175,7 @@ const project = reactive({
   externalCollaborator: ''
 })
 
-// 项目成员数据
+// 项目成员数据（演示用）
 const projectMembers = ref([
   { name: '张教授', role: '负责人', department: '计算机学院', workload: '30%' },
   { name: '李研究员', role: '核心成员', department: '人工智能研究院', workload: '25%' },
@@ -189,18 +189,20 @@ onMounted(() => {
 
 function loadProjectDetail() {
   loading.value = true
-  // 模拟加载项目详情
+  // 这里暂时用模拟数据，后面接后端时可以改成根据 route.params.id 调接口
   setTimeout(() => {
     Object.assign(project, {
       name: '人工智能在科研管理中的应用研究',
       projectId: 'RH2024001',
-      type: 'NATIONAL',
-      status: 'ONGOING',
+      // ⭐ 类型 & 状态使用数据库中的枚举值
+      type: '国家级',
+      status: '在研',
       principal: '张教授',
       totalFunding: 500000,
       startDate: '2024-01-01',
       expectedEndDate: '2026-12-31',
-      description: '本研究旨在探索人工智能技术在高校科研管理中的应用，通过自然语言处理、机器学习等技术，提高科研项目管理的效率和质量。研究内容包括：科研项目智能推荐、科研成果自动分析、科研进度智能监控等。',
+      description:
+        '本研究旨在探索人工智能技术在高校科研管理中的应用，通过自然语言处理、机器学习等技术，提高科研项目管理的效率和质量。研究内容包括：科研项目智能推荐、科研成果自动分析、科研进度智能监控等。',
       externalCollaborator: '某人工智能研究院'
     })
     loading.value = false
@@ -208,53 +210,48 @@ function loadProjectDetail() {
 }
 
 function handleEdit() {
-  router.push(`/projects/${route.params.id}/edit`)
+  router.push(`/projects/${route.params.id || ''}/edit`)
 }
 
 function handleExport() {
   ElMessage.info('导出功能开发中...')
 }
 
+/** 项目类型对应的 Tag 颜色 */
 function getTypeTag(type) {
   const typeMap = {
-    'NATIONAL': 'danger',
-    'PROVINCIAL': 'warning',
-    'SCHOOL': 'success',
-    'HORIZONTAL': 'info'
+    '国家级': 'danger',
+    '省部级': 'warning',
+    '校级': 'success',
+    '横向项目': 'info',
+    '其他': 'info'
   }
   return typeMap[type] || 'info'
 }
 
+/** 项目类型显示的文字（目前直接返回中文） */
 function getTypeText(type) {
-  const typeTextMap = {
-    'NATIONAL': '国家级',
-    'PROVINCIAL': '省部级',
-    'SCHOOL': '校级',
-    'HORIZONTAL': '横向项目'
-  }
-  return typeTextMap[type] || type
+  // 后续如果你想在数据库里存英文代码，这里可以做中英文转换
+  return type || '其他'
 }
 
+/** 项目状态对应的 Tag 颜色 */
 function getStatusTag(status) {
   const statusMap = {
-    'APPLICATION': 'info',
-    'ONGOING': 'success',
-    'CONCLUSION': 'warning',
-    'TERMINATED': 'danger'
+    '申报中': 'info',
+    '在研': 'success',
+    '已结题': 'warning',
+    '已终止': 'danger'
   }
   return statusMap[status] || 'info'
 }
 
+/** 项目状态显示的文字（目前直接返回中文） */
 function getStatusText(status) {
-  const statusTextMap = {
-    'APPLICATION': '申报中',
-    'ONGOING': '在研',
-    'CONCLUSION': '已结题',
-    'TERMINATED': '已终止'
-  }
-  return statusTextMap[status] || status
+  return status || '未知状态'
 }
 
+/** 成员角色 Tag 颜色 */
 function getMemberRoleTag(role) {
   const roleMap = {
     '负责人': 'danger',
@@ -265,52 +262,59 @@ function getMemberRoleTag(role) {
   return roleMap[role] || 'info'
 }
 
+/** 金额格式化 */
 function formatFunding(amount) {
   if (!amount) return '0'
-  return amount.toLocaleString('zh-CN')
+  return Number(amount).toLocaleString('zh-CN')
 }
 
+/** 项目进度步数：根据中文状态判断 */
 function getProgressStep(status) {
   const stepMap = {
-    'APPLICATION': 1,
-    'ONGOING': 2,
-    'CONCLUSION': 3,
-    'TERMINATED': 0
+    '申报中': 1,
+    '在研': 2,
+    '已结题': 3,
+    '已终止': 0
   }
   return stepMap[status] || 0
 }
 
+/** 已进行时间 */
 function getElapsedTime() {
   if (!project.startDate) return '--'
   const start = new Date(project.startDate)
   const now = new Date()
-  const diffTime = Math.abs(now - start)
+  const diffTime = now - start
+  if (diffTime <= 0) return '0 天'
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
   return `${diffDays} 天`
 }
 
+/** 剩余时间 */
 function getRemainingTime() {
   if (!project.expectedEndDate) return '--'
   const end = new Date(project.expectedEndDate)
   const now = new Date()
-  const diffTime = Math.abs(end - now)
+  const diffTime = end - now
+  if (diffTime <= 0) return '0 天'
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
   return `${diffDays} 天`
 }
 
+/** 完成度（简单按时间比例估算） */
 function getCompletionRate() {
   if (!project.startDate || !project.expectedEndDate) return 0
-  
+
   const start = new Date(project.startDate)
   const end = new Date(project.expectedEndDate)
   const now = new Date()
-  
+
   const totalDuration = end - start
   const elapsedDuration = now - start
-  
+
   if (elapsedDuration <= 0) return 0
   if (elapsedDuration >= totalDuration) return 100
-  
+
   return Math.round((elapsedDuration / totalDuration) * 100)
 }
 </script>
@@ -463,26 +467,26 @@ function getCompletionRate() {
   .page-header {
     padding: 16px;
   }
-  
+
   .header-content {
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .header-actions {
     width: 100%;
     justify-content: flex-end;
   }
-  
+
   .content-grid {
     grid-template-columns: 1fr;
     padding: 0 8px;
   }
-  
+
   .content-grid > * {
     grid-column: 1 !important;
   }
-  
+
   .progress-stats {
     grid-template-columns: 1fr;
     gap: 16px;
