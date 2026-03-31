@@ -1,32 +1,41 @@
 package com.univ.researchhub.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
-@TableName("user")  // 指定对应数据库表名（必须与数据库表名一致）
+@TableName("user")
 public class User {
+
     @TableId(value = "user_id", type = IdType.AUTO)
-    private Long userId;  // 改为userId，与数据库字段名一致，避免后续调用混淆
+    @JsonProperty("user_id") // 前端用 user_id
+    private Long userId;
 
-    @TableField(insertStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.NOT_NULL)
-    private String username;  // 登录账号（非空）
+    private String username;
 
-    @TableField(insertStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.NOT_NULL)
-    private String password;  // 登录密码（加密存储，非空）
+    private String password;
 
-    @TableField(insertStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.NOT_NULL)
-    private String role;      // 角色：ADMIN / TEACHER / STUDENT（非空）
+    private String role;
 
-    @TableField(insertStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.NOT_NULL)
-    private String real_name;      // 真实姓名（非空，教师查看个人信息时需要）
+    // ✅ 数据库列 real_name -> Java realName，但输出给前端仍然是 real_name
+    @TableField("real_name")
+    @JsonProperty("real_name")
+    private String realName;
 
-    @TableField(insertStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.IGNORED)
-    private String phone;     // 手机号（可选）
+    private String phone;
 
-    @TableField(insertStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.IGNORED)
-    private String email;     // 邮箱（可选）
+    private String email;
+
+    // ✅ 数据库列 created_at -> Java createdAt，但输出给前端仍然是 created_at
+    @TableField("created_at")
+    @JsonProperty("created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    private LocalDateTime createdAt;
 }

@@ -184,26 +184,26 @@
             </template>
           </el-table-column>
 
-<el-table-column
-  label="操作"
-  width="180"
-  fixed="right"
-  align="center"
->
-  <template #default="{ row }">
-    <div class="action-cell">
-      <el-button size="small" link type="primary">
-        查看
-      </el-button>
-      <el-button size="small" link type="primary">
-        编辑
-      </el-button>
-      <el-button size="small" link type="danger">
-        删除
-      </el-button>
-    </div>
-  </template>
-</el-table-column>
+          <el-table-column
+            label="操作"
+            width="180"
+            fixed="right"
+            align="center"
+          >
+            <template #default="{ row }">
+              <div class="action-cell">
+                <el-button size="small" link type="primary">
+                  查看
+                </el-button>
+                <el-button size="small" link type="primary">
+                  编辑
+                </el-button>
+                <el-button size="small" link type="danger">
+                  删除
+                </el-button>
+              </div>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
 
@@ -337,7 +337,7 @@ export default {
         case '校级':
           return 'success'
         default:
-          return ''
+          return 'info'
       }
     },
 
@@ -349,7 +349,7 @@ export default {
         case '未开始':
           return 'info'
         case '已结项':
-          return ''
+          return 'info'
         case '暂停':
           return 'warning'
         default:
@@ -508,6 +508,7 @@ export default {
   justify-content: flex-end;
   flex: 1;
 }
+
 .action-cell {
   display: flex;
   justify-content: center;

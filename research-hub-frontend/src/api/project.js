@@ -4,10 +4,15 @@ const prefix = '/project'
 
 // 获取项目列表（分页）
 export async function getProjects(params = {}) {
+    const { page = 1, pageSize = 10, ...otherParams } = params
     return request({
         url: `${prefix}/list`,
         method: 'get',
-        params
+        params: {
+            pageNum: page,
+            pageSize,
+            ...otherParams
+        }
     })
 }
 
@@ -19,7 +24,7 @@ export async function getProject(id) {
     })
 }
 
-// 新建项目
+// 创建项目
 export async function createProject(projectData) {
     return request({
         url: `${prefix}`,
@@ -45,10 +50,19 @@ export async function deleteProject(id) {
     })
 }
 
-// 仪表盘统计（如果有）
+// 项目统计（如果有）
 export async function getProjectStats() {
     return request({
         url: `${prefix}/stats`,
         method: 'get'
+    })
+}
+
+// 获取项目统计数据
+export async function getProjectStatistics(params = {}) {
+    return request({
+        url: `${prefix}/statistics`,
+        method: 'get',
+        params
     })
 }

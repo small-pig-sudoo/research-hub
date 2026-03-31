@@ -44,7 +44,7 @@ public class AdminController {
         teacher.setUsername(addTeacherDTO.getUsername());
         teacher.setPassword(addTeacherDTO.getPassword()); // 生产环境需加密（如BCrypt）
         teacher.setRole("TEACHER"); // 角色：教师
-        teacher.setReal_name(addTeacherDTO.getName());
+        teacher.setRealName(addTeacherDTO.getName());
         teacher.setPhone(addTeacherDTO.getPhone());
         teacher.setEmail(addTeacherDTO.getEmail());
 

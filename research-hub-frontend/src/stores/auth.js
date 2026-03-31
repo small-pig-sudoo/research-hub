@@ -2,10 +2,12 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { login as apiLogin, logout as apiLogout, getProfile } from '../api/login'
+import { getMyMenus } from '../api/rbac'
 
 export const useAuthStore = defineStore('auth', () => {
     const token = ref(localStorage.getItem('token'))
     const user = ref(JSON.parse(localStorage.getItem('user') || 'null'))
+    const menus = ref(JSON.parse(localStorage.getItem('menus') || '[]'))
     const loading = ref(false)
 
     const isAuthenticated = computed(() => !!token.value)
@@ -33,6 +35,9 @@ export const useAuthStore = defineStore('auth', () => {
                 // 保存到localStorage
                 localStorage.setItem('token', response.data.token)
                 localStorage.setItem('user', JSON.stringify(user.value))
+                // 登录成功后拉取菜单权限
+                await fetchMyMenus()
+
 
                 ElMessage.success(response.message || '登录成功')
                 return true
@@ -62,8 +67,10 @@ export const useAuthStore = defineStore('auth', () => {
         } finally {
             token.value = null
             user.value = null
+            menus.value = []
             localStorage.removeItem('token')
             localStorage.removeItem('user')
+            localStorage.removeItem('menus')
             loading.value = false
         }
     }
@@ -104,6 +111,20 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    // 获取用户菜单权限
+    async function fetchMyMenus() {
+        try {
+            const res = await getMyMenus()
+            if (res.code === 200) {
+                menus.value = res.data || []
+                localStorage.setItem('menus', JSON.stringify(menus.value))
+            }
+        } catch (e) {
+            console.error('获取菜单权限失败:', e)
+            // 忽略错误，菜单加载失败不阻塞登录
+        }
+    }
+
     // 权限计算属性
     const userRole = computed(() => user.value?.role)
     const isAdmin = computed(() => user.value?.role === 'admin')
@@ -114,6 +135,7 @@ export const useAuthStore = defineStore('auth', () => {
         // 状态
         token,
         user,
+        menus,
         loading,
 
         // 计算属性
@@ -128,6 +150,7 @@ export const useAuthStore = defineStore('auth', () => {
         login,
         logout,
         fetchProfile,
+        fetchMyMenus,
         initAuth
     }
 })

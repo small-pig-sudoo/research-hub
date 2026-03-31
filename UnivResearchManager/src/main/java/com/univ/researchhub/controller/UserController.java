@@ -1,61 +1,79 @@
 package com.univ.researchhub.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.univ.researchhub.common.Result;
 import com.univ.researchhub.entity.User;
+import com.univ.researchhub.entity.rbac.UserRole;
+import com.univ.researchhub.mapper.rbac.UserRoleMapper;
 import com.univ.researchhub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-/**
- * 用户接口层：提供 RESTful API，供前端调用
- * @RestController = @Controller + @ResponseBody（返回 JSON 格式数据）
- * @RequestMapping("/api/user")：所有用户接口的基础路径
- */
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
-    // 注入 UserService，调用业务逻辑
     @Autowired
     private UserService userService;
 
-    // 1. 根据用户名查询用户（GET 请求，路径参数）
-    // 访问地址：http://localhost:8080/api/user/username/admin
-    @GetMapping("/username/{username}")
-    public User getUserByUsername(@PathVariable String username) {
-        return userService.getByUsername(username);
+    @Autowired
+    private UserRoleMapper userRoleMapper;
+
+    // ✅ 保留你原有分页接口（如果你已有同名方法，就只保留一个）
+    @GetMapping("/page")
+    public Result<?> pageUsers(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String role
+    ) {
+        // 这里依赖你现有的 userService.pageUsers(...)，如果你的方法名不同告诉我我再对齐
+        Object pageData = userService.pageUsers(page, size, keyword, role);
+        return Result.success(pageData);
     }
 
-    // 2. 校验用户名是否已存在（GET 请求，请求参数）
-    // 访问地址：http://localhost:8080/api/user/check?username=test
-    @GetMapping("/check")
-    public boolean checkUsername(@RequestParam String username) {
-        return userService.checkUsernameExists(username);
-    }
-
-    // 3. 根据角色查询用户列表（GET 请求，请求参数）
-    // 访问地址：http://localhost:8080/api/user/role?role=ADMIN
-    @GetMapping("/role")
-    public List<User> getUsersByRole(@RequestParam String role) {
-        return userService.getUsersByRole(role);
-    }
-
-    // 4. 新增用户（POST 请求，请求体传 JSON 数据）
-    // 访问地址：http://localhost:8080/api/user
+    // ✅ 创建用户：默认密码 123456
     @PostMapping
-    public boolean addUser(@RequestBody User user) {
-        // 先校验用户名，不存在则新增
-        if (userService.checkUsernameExists(user.getUsername())) {
-            return false; // 用户名已存在，新增失败
+    public Result<?> create(@RequestBody User user) {
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            user.setPassword("123456");
         }
-        return userService.save(user); // 调用 Service 新增用户
+        boolean ok = userService.save(user);
+        return ok ? Result.success(user) : Result.error("创建用户失败");
     }
 
-    // 5. 删除用户（DELETE 请求，路径参数传用户 ID）
-    // 访问地址：http://localhost:8080/api/user/1（1 是数据库中的 user_id）
+    // ✅ 查询用户详情
+    @GetMapping("/{id}")
+    public Result<?> getById(@PathVariable Long id) {
+        User u = userService.getById(id);
+        return u != null ? Result.success(u) : Result.error("用户不存在");
+    }
+
+    // ✅ 更新用户（不允许这里改密码）
+    @PutMapping("/{id}")
+    public Result<?> update(@PathVariable Long id, @RequestBody User user) {
+        user.setUserId(id);
+        user.setPassword(null); // 避免误覆盖密码
+        boolean ok = userService.updateById(user);
+        return ok ? Result.success(true) : Result.error("更新失败");
+    }
+
+    // ✅ 重置密码：默认 123456
+    @PostMapping("/{id}/reset-password")
+    public Result<?> resetPassword(@PathVariable Long id,
+                                   @RequestParam(defaultValue = "123456") String password) {
+        User u = new User();
+        u.setUserId(id);
+        u.setPassword(password);
+        boolean ok = userService.updateById(u);
+        return ok ? Result.success(true) : Result.error("重置失败");
+    }
+
+    // ✅ 删除用户：先删除 user_role 关联
     @DeleteMapping("/{id}")
-    public boolean deleteUser(@PathVariable Long id) {
-        return userService.removeById(id); // 根据 ID 删除用户
+    public Result<?> delete(@PathVariable Long id) {
+        userRoleMapper.delete(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, id));
+        boolean ok = userService.removeById(id);
+        return ok ? Result.success(true) : Result.error("删除失败");
     }
 }

@@ -1,4 +1,5 @@
 package com.univ.researchhub.service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.univ.researchhub.entity.User;
@@ -16,4 +17,7 @@ public interface UserService extends IService<User> {
 
     // 3. 自定义业务：根据用户角色查询用户列表（如查询所有管理员、所有学生）
     List<User> getUsersByRole(String role);
+
+    IPage<User> pageUsers(Integer page, Integer size, String keyword, String role);
+
 }

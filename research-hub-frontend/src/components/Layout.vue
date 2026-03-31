@@ -31,92 +31,86 @@
           active-text-color="#409EFF"
         >
           <!-- 仪表盘 -->
-          <el-menu-item index="/dashboard">
+          <el-menu-item index="/dashboard" v-if="hasMenu('/dashboard')">
             <el-icon><DataBoard /></el-icon>
             <template #title>仪表盘</template>
           </el-menu-item>
 
           <!-- 项目管理 -->
-          <el-sub-menu index="projects">
+          <el-sub-menu index="projects" v-if="hasAnyMenu(['/projects', '/projects/create'])">
             <template #title>
               <el-icon><Collection /></el-icon>
               <span>项目管理</span>
             </template>
-            <el-menu-item index="/projects">
+            <el-menu-item index="/projects" v-if="hasMenu('/projects')">
               <template #title>项目列表</template>
             </el-menu-item>
-            <el-menu-item index="/projects/create">
+            <el-menu-item index="/projects/create" v-if="hasMenu('/projects/create')">
               <template #title>创建项目</template>
-            </el-menu-item>
-            <el-menu-item index="/projects/categories">
-              <template #title>项目分类</template>
             </el-menu-item>
           </el-sub-menu>
 
           <!-- 用户管理 -->
-          <el-sub-menu index="users">
+          <el-sub-menu index="users" v-if="hasAnyMenu(['/users', '/users/roles'])">
             <template #title>
               <el-icon><User /></el-icon>
               <span>用户管理</span>
             </template>
-            <el-menu-item index="/users">
+            <el-menu-item index="/users" v-if="hasMenu('/users')">
               <template #title>用户列表</template>
             </el-menu-item>
-            <el-menu-item index="/users/roles">
+            <el-menu-item index="/users/roles" v-if="hasMenu('/users/roles')">
               <template #title>角色权限</template>
-            </el-menu-item>
-            <el-menu-item index="/users/departments">
-              <template #title>部门管理</template>
             </el-menu-item>
           </el-sub-menu>
 
           <!-- 成员管理 -->
-          <el-sub-menu index="members">
+          <el-sub-menu index="members" v-if="hasAnyMenu(['/members', '/members/assign', '/members/roles'])">
             <template #title>
               <el-icon><User /></el-icon>
               <span>成员管理</span>
             </template>
-            <el-menu-item index="/members">
+            <el-menu-item index="/members" v-if="hasMenu('/members')">
               <template #title>成员列表</template>
             </el-menu-item>
-            <el-menu-item index="/members/assign">
+            <el-menu-item index="/members/assign" v-if="hasMenu('/members/assign')">
               <template #title>分配成员</template>
             </el-menu-item>
-            <el-menu-item index="/members/roles">
-              <template #title>成员角色</template>
+            <el-menu-item index="/members/roles" v-if="hasMenu('/members/roles')">
+              <template #title>职责分工</template>
             </el-menu-item>
           </el-sub-menu>
 
           <!-- 数据统计 -->
-          <el-sub-menu index="statistics">
+          <el-sub-menu index="statistics" v-if="hasAnyMenu(['/statistics/projects', '/statistics/funding', '/statistics/performance'])">
             <template #title>
               <el-icon><TrendCharts /></el-icon>
               <span>数据统计</span>
             </template>
-            <el-menu-item index="/statistics/projects">
+            <el-menu-item index="/statistics/projects" v-if="hasMenu('/statistics/projects')">
               <template #title>项目统计</template>
             </el-menu-item>
-            <el-menu-item index="/statistics/funding">
+            <el-menu-item index="/statistics/funding" v-if="hasMenu('/statistics/funding')">
               <template #title>经费统计</template>
             </el-menu-item>
-            <el-menu-item index="/statistics/performance">
+            <el-menu-item index="/statistics/performance" v-if="hasMenu('/statistics/performance')">
               <template #title>绩效统计</template>
             </el-menu-item>
           </el-sub-menu>
 
           <!-- 系统设置 -->
-          <el-sub-menu index="system">
+          <el-sub-menu index="system" v-if="hasAnyMenu(['/system/basic', '/system/backup', '/system/logs'])">
             <template #title>
               <el-icon><Setting /></el-icon>
               <span>系统设置</span>
             </template>
-            <el-menu-item index="/system/basic">
+            <el-menu-item index="/system/basic" v-if="hasMenu('/system/basic')">
               <template #title>基础设置</template>
             </el-menu-item>
-            <el-menu-item index="/system/backup">
+            <el-menu-item index="/system/backup" v-if="hasMenu('/system/backup')">
               <template #title>数据备份</template>
             </el-menu-item>
-            <el-menu-item index="/system/logs">
+            <el-menu-item index="/system/logs" v-if="hasMenu('/system/logs')">
               <template #title>系统日志</template>
             </el-menu-item>
           </el-sub-menu>
@@ -207,6 +201,15 @@ const activeMenu = computed(() => route.path)
 const userName = computed(
   () => authStore.user?.realName || authStore.user?.username || '用户'
 )
+
+// 判断是否有菜单权限
+const hasMenu = (path) => {
+  const ms = authStore.menus || []
+  return ms.length === 0 || ms.includes(path) // menus没加载时默认显示
+}
+
+// 判断是否有任意子菜单权限
+const hasAnyMenu = (paths) => paths.some(p => hasMenu(p))
 
 const currentRouteTitle = computed(() => {
   const titles = {

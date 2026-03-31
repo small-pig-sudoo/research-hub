@@ -7,85 +7,85 @@
       label-width="100px"
       label-position="right"
     >
-      <el-form-item label="ÓÃ»§Ãû" prop="username">
+      <el-form-item label="ç”¨æˆ·å" prop="username">
         <el-input
           v-model="form.username"
-          placeholder="ÇëÊäÈëÓÃ»§Ãû"
+          placeholder="è¯·è¾“å…¥ç”¨æˆ·å"
           :disabled="mode === 'edit'"
         />
       </el-form-item>
 
-      <el-form-item label="ĞÕÃû" prop="realName">
+      <el-form-item label="å§“å" prop="realName">
         <el-input
           v-model="form.realName"
-          placeholder="ÇëÊäÈëÕæÊµĞÕÃû"
+          placeholder="è¯·è¾“å…¥çœŸå®å§“å"
         />
       </el-form-item>
 
-      <el-form-item label="ÓÊÏä" prop="email">
+      <el-form-item label="é‚®ç®±" prop="email">
         <el-input
           v-model="form.email"
-          placeholder="ÇëÊäÈëÓÊÏäµØÖ·"
+          placeholder="è¯·è¾“å…¥é‚®ç®±åœ°å€"
           type="email"
         />
       </el-form-item>
 
-      <el-form-item label="½ÇÉ«" prop="role">
+      <el-form-item label="è§’è‰²" prop="role">
         <el-select
           v-model="form.role"
-          placeholder="ÇëÑ¡Ôñ½ÇÉ«"
+          placeholder="è¯·é€‰æ‹©è§’è‰²"
           style="width: 100%"
         >
-          <el-option label="¹ÜÀíÔ±" value="ADMIN" />
-          <el-option label="½ÌÊ¦" value="TEACHER" />
-          <el-option label="Ñ§Éú" value="STUDENT" />
+          <el-option label="ç®¡ç†å‘˜" value="ADMIN" />
+          <el-option label="æ•™å¸ˆ" value="TEACHER" />
+          <el-option label="å­¦ç”Ÿ" value="STUDENT" />
         </el-select>
       </el-form-item>
 
-      <el-form-item label="ËùÊôµ¥Î»" prop="department">
+      <el-form-item label="æ‰€å±å•ä½" prop="department">
         <el-input
           v-model="form.department"
-          placeholder="ÇëÊäÈëËùÊôµ¥Î»"
+          placeholder="è¯·è¾“å…¥æ‰€å±å•ä½"
         />
       </el-form-item>
 
-      <el-form-item label="ÁªÏµµç»°" prop="phone">
+      <el-form-item label="è”ç³»ç”µè¯" prop="phone">
         <el-input
           v-model="form.phone"
-          placeholder="ÇëÊäÈëÁªÏµµç»°"
+          placeholder="è¯·è¾“å…¥è”ç³»ç”µè¯"
         />
       </el-form-item>
 
-      <el-form-item label="ÑĞ¾¿·½Ïò" prop="researchField">
+      <el-form-item label="ç ”ç©¶æ–¹å‘" prop="researchField">
         <el-input
           v-model="form.researchField"
-          placeholder="ÇëÊäÈëÑĞ¾¿·½Ïò"
+          placeholder="è¯·è¾“å…¥ç ”ç©¶æ–¹å‘"
           type="textarea"
           :rows="3"
         />
       </el-form-item>
 
-      <el-form-item v-if="mode === 'create'" label="³õÊ¼ÃÜÂë" prop="password">
+      <el-form-item v-if="mode === 'create'" label="åˆå§‹å¯†ç " prop="password">
         <el-input
           v-model="form.password"
           type="password"
-          placeholder="ÇëÊäÈë³õÊ¼ÃÜÂë"
+          placeholder="è¯·è¾“å…¥åˆå§‹å¯†ç "
           show-password
         />
       </el-form-item>
 
-      <el-form-item label="ÓÃ»§×´Ì¬" prop="status">
+      <el-form-item label="ç”¨æˆ·çŠ¶æ€" prop="status">
         <el-radio-group v-model="form.status">
-          <el-radio label="ACTIVE">¼¤»î</el-radio>
-          <el-radio label="INACTIVE">½ûÓÃ</el-radio>
+          <el-radio label="ACTIVE">æ¿€æ´»</el-radio>
+          <el-radio label="INACTIVE">ç¦ç”¨</el-radio>
         </el-radio-group>
       </el-form-item>
 
       <el-form-item>
         <div class="form-actions">
-          <el-button @click="$emit('cancel')">È¡Ïû</el-button>
+          <el-button @click="$emit('cancel')">å–æ¶ˆ</el-button>
           <el-button type="primary" :loading="loading" @click="handleSubmit">
-            {{ mode === 'create' ? '´´½¨' : '¸üĞÂ' }}
+            {{ mode === 'create' ? 'åˆ›å»º' : 'æ›´æ–°' }}
           </el-button>
         </div>
       </el-form-item>
@@ -114,7 +114,7 @@ const emit = defineEmits(['submit', 'cancel'])
 const formRef = ref()
 const loading = ref(false)
 
-// ±íµ¥Êı¾İ
+// è¡¨å•æ•°æ®
 const form = reactive({
   username: '',
   realName: '',
@@ -123,40 +123,40 @@ const form = reactive({
   department: '',
   phone: '',
   researchField: '',
-  password: '123456', // Ä¬ÈÏÃÜÂë
+  password: '123456', // é»˜è®¤å¯†ç 
   status: 'ACTIVE'
 })
 
-// ±íµ¥ÑéÖ¤¹æÔò
+// è¡¨å•éªŒè¯è§„åˆ™
 const rules = {
   username: [
-    { required: true, message: 'ÇëÊäÈëÓÃ»§Ãû', trigger: 'blur' },
-    { min: 3, max: 20, message: 'ÓÃ»§Ãû³¤¶ÈÎª 3 µ½ 20 ¸ö×Ö·û', trigger: 'blur' }
+    { required: true, message: 'è¯·è¾“å…¥ç”¨æˆ·å', trigger: 'blur' },
+    { min: 3, max: 20, message: 'ç”¨æˆ·åé•¿åº¦ä¸º 3 åˆ° 20 ä¸ªå­—ç¬¦', trigger: 'blur' }
   ],
   realName: [
-    { required: true, message: 'ÇëÊäÈëĞÕÃû', trigger: 'blur' },
-    { min: 2, max: 20, message: 'ĞÕÃû³¤¶ÈÎª 2 µ½ 20 ¸ö×Ö·û', trigger: 'blur' }
+    { required: true, message: 'è¯·è¾“å…¥å§“å', trigger: 'blur' },
+    { min: 2, max: 20, message: 'å§“åé•¿åº¦ä¸º 2 åˆ° 20 ä¸ªå­—ç¬¦', trigger: 'blur' }
   ],
   email: [
-    { required: true, message: 'ÇëÊäÈëÓÊÏäµØÖ·', trigger: 'blur' },
-    { type: 'email', message: 'ÇëÊäÈëÓĞĞ§µÄÓÊÏäµØÖ·', trigger: 'blur' }
+    { required: true, message: 'è¯·è¾“å…¥é‚®ç®±åœ°å€', trigger: 'blur' },
+    { type: 'email', message: 'è¯·è¾“å…¥æœ‰æ•ˆçš„é‚®ç®±åœ°å€', trigger: 'blur' }
   ],
   role: [
-    { required: true, message: 'ÇëÑ¡Ôñ½ÇÉ«', trigger: 'change' }
+    { required: true, message: 'è¯·é€‰æ‹©è§’è‰²', trigger: 'change' }
   ],
   department: [
-    { required: true, message: 'ÇëÊäÈëËùÊôµ¥Î»', trigger: 'blur' }
+    { required: true, message: 'è¯·è¾“å…¥æ‰€å±å•ä½', trigger: 'blur' }
   ],
   phone: [
-    { pattern: /^1[3-9]\d{9}$/, message: 'ÇëÊäÈëÓĞĞ§µÄÊÖ»úºÅÂë', trigger: 'blur' }
+    { pattern: /^1[3-9]\d{9}$/, message: 'è¯·è¾“å…¥æœ‰æ•ˆçš„æ‰‹æœºå·ç ', trigger: 'blur' }
   ],
   password: [
-    { required: true, message: 'ÇëÊäÈë³õÊ¼ÃÜÂë', trigger: 'blur' },
-    { min: 6, message: 'ÃÜÂë³¤¶ÈÖÁÉÙ6Î»', trigger: 'blur' }
+    { required: true, message: 'è¯·è¾“å…¥åˆå§‹å¯†ç ', trigger: 'blur' },
+    { min: 6, message: 'å¯†ç é•¿åº¦è‡³å°‘6ä½', trigger: 'blur' }
   ]
 }
 
-// ¼àÌıprops±ä»¯£¬ÔÚ±à¼­Ä£Ê½ÏÂÌî³äÊı¾İ
+// ç›‘å¬propså˜åŒ–ï¼Œåœ¨ç¼–è¾‘æ¨¡å¼ä¸‹å¡«å……æ•°æ®
 watch(() => props.user, (newUser) => {
   if (newUser && props.mode === 'edit') {
     Object.assign(form, {
@@ -172,7 +172,7 @@ watch(() => props.user, (newUser) => {
   }
 }, { immediate: true })
 
-// ÖØÖÃ±íµ¥£¨ÔÚ´´½¨Ä£Ê½ÏÂ£©
+// é‡ç½®è¡¨å•ï¼ˆåœ¨åˆ›å»ºæ¨¡å¼ä¸‹ï¼‰
 onMounted(() => {
   if (props.mode === 'create' && props.user) {
     Object.assign(form, {
@@ -199,19 +199,19 @@ async function handleSubmit() {
     loading.value = true
 
     if (props.mode === 'create') {
-      // ´´½¨ÓÃ»§
+      // åˆ›å»ºç”¨æˆ·
       await createUser(form)
-      ElMessage.success('ÓÃ»§´´½¨³É¹¦')
+      ElMessage.success('ç”¨æˆ·åˆ›å»ºæˆåŠŸ')
     } else {
-      // ¸üĞÂÓÃ»§
+      // æ›´æ–°ç”¨æˆ·
       await updateUser(props.user.userId, form)
-      ElMessage.success('ÓÃ»§¸üĞÂ³É¹¦')
+      ElMessage.success('ç”¨æˆ·æ›´æ–°æˆåŠŸ')
     }
 
     emit('submit')
   } catch (error) {
-    console.error('±íµ¥Ìá½»´íÎó:', error)
-    ElMessage.error(props.mode === 'create' ? 'ÓÃ»§´´½¨Ê§°Ü' : 'ÓÃ»§¸üĞÂÊ§°Ü')
+    console.error('è¡¨å•æäº¤é”™è¯¯:', error)
+    ElMessage.error(props.mode === 'create' ? 'ç”¨æˆ·åˆ›å»ºå¤±è´¥' : 'ç”¨æˆ·æ›´æ–°å¤±è´¥')
   } finally {
     loading.value = false
   }

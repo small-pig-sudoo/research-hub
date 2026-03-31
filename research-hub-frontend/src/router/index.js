@@ -3,48 +3,56 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import Dashboard from '../views/Dashboard.vue'
 import ProjectList from '../views/ProjectList.vue'
-import ProjectForm from '../views/ProjectForm.vue' // â­ æ–°å¢ï¼šåˆ›å»ºé¡¹ç›®é¡µé¢
+import ProjectForm from '../views/ProjectForm.vue' // ? ĞÂÔö£º´´½¨ÏîÄ¿Ò³Ãæ
+import UserList from '../views/UserList.vue'
+import RolePermission from '../views/RolePermission.vue'
+import MemberList from '../views/MemberList.vue'
+import MemberAssign from '../views/MemberAssign.vue' // ? ĞÂÔö£º³ÉÔ±·ÖÅäÒ³Ãæ
+import MemberDuty from '../views/MemberDuty.vue' // ? ĞÂÔö£ºÖ°Ôğ·Ö¹¤Ò³Ãæ
+import ProjectStatistics from '../views/ProjectStatistics.vue' // ? ĞÂÔö£ºÏîÄ¿Í³¼ÆÒ³Ãæ
+import FundingStatistics from '../views/FundingStatistics.vue' // ? ĞÂÔö£º¾­·ÑÍ³¼ÆÒ³Ãæ
+import PerformanceStatistics from '../views/PerformanceStatistics.vue' // ? ĞÂÔö£º¼¨Ğ§Í³¼ÆÒ³Ãæ
 
 /**
- * å ä½é¡µé¢ç»„ä»¶ï¼šå…ˆè®©æ‰€æœ‰èœå•å¯ä»¥æ‰“å¼€é¡µé¢ï¼Œåé¢ä½ éœ€è¦å“ªä¸ªæ¨¡å—ï¼Œ
- * æˆ‘ä»¬å†æŠŠå¯¹åº” path çš„ component æ¢æˆçœŸæ­£çš„é¡µé¢ç»„ä»¶å³å¯ã€‚
+ * Õ¼Î»Ò³Ãæ×é¼ş£ºÏÈÈÃËùÓĞ²Ëµ¥¿ÉÒÔ´ò¿ªÒ³Ãæ£¬ºóÃæÄãĞèÒªÄÄ¸öÄ£¿é£¬
+ * ÎÒÃÇÔÙ°Ñ¶ÔÓ¦ path µÄ component »»³ÉÕæÕıµÄÒ³Ãæ×é¼ş¼´¿É¡£
  */
 const Placeholder = {
-  template: '<div style="padding:20px;">åŠŸèƒ½å¼€å‘ä¸­...</div>'
+  template: '<div style="padding:20px;">¹¦ÄÜ¿ª·¢ÖĞ...</div>'
 }
 
 const routes = [
-  // ç™»å½•
+  // µÇÂ¼
   { path: '/login', component: Login },
 
-  // é»˜è®¤è·³è½¬åˆ°ä»ªè¡¨ç›˜
+  // Ä¬ÈÏÌø×ªµ½ÒÇ±íÅÌ
   { path: '/', redirect: '/dashboard' },
 
-  // ä»ªè¡¨ç›˜
+  // ÒÇ±íÅÌ
   { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
 
-  // ===== é¡¹ç›®ç®¡ç† =====
+  // ===== ÏîÄ¿¹ÜÀí =====
   { path: '/projects', component: ProjectList, meta: { requiresAuth: true } },
-  // â­ è¿™é‡Œæ”¹æˆçœŸæ­£çš„ ProjectForm ç»„ä»¶
+  // ? ÕâÀï¸Ä³ÉÕæÕıµÄ ProjectForm ×é¼ş
   { path: '/projects/create', component: ProjectForm, meta: { requiresAuth: true } },
   { path: '/projects/categories', component: Placeholder, meta: { requiresAuth: true } },
 
-  // ===== ç”¨æˆ·ç®¡ç† =====
-  { path: '/users', component: Placeholder, meta: { requiresAuth: true } },
-  { path: '/users/roles', component: Placeholder, meta: { requiresAuth: true } },
+  // ===== ÓÃ»§¹ÜÀí =====
+  { path: '/users', component: UserList, meta: { requiresAuth: true } },
+  { path: '/users/roles', component: RolePermission, meta: { requiresAuth: true } },
   { path: '/users/departments', component: Placeholder, meta: { requiresAuth: true } },
 
-  // ===== æˆå‘˜ç®¡ç† =====
-  { path: '/members', component: Placeholder, meta: { requiresAuth: true } },
-  { path: '/members/assign', component: Placeholder, meta: { requiresAuth: true } },
-  { path: '/members/roles', component: Placeholder, meta: { requiresAuth: true } },
+  // ===== ³ÉÔ±¹ÜÀí =====
+  { path: '/members', component: MemberList, meta: { requiresAuth: true } },
+  { path: '/members/assign', component: MemberAssign, meta: { requiresAuth: true } },
+  { path: '/members/roles', component: MemberDuty, meta: { requiresAuth: true } },
 
-  // ===== æ•°æ®ç»Ÿè®¡ =====
-  { path: '/statistics/projects', component: Placeholder, meta: { requiresAuth: true } },
-  { path: '/statistics/funding', component: Placeholder, meta: { requiresAuth: true } },
-  { path: '/statistics/performance', component: Placeholder, meta: { requiresAuth: true } },
+  // ===== Êı¾İÍ³¼Æ =====
+  { path: '/statistics/projects', component: ProjectStatistics, meta: { requiresAuth: true } },
+  { path: '/statistics/funding', component: FundingStatistics, meta: { requiresAuth: true } },
+  { path: '/statistics/performance', component: PerformanceStatistics, meta: { requiresAuth: true } },
 
-  // ===== ç³»ç»Ÿè®¾ç½® =====
+  // ===== ÏµÍ³ÉèÖÃ =====
   { path: '/system/basic', component: Placeholder, meta: { requiresAuth: true } },
   { path: '/system/backup', component: Placeholder, meta: { requiresAuth: true } },
   { path: '/system/logs', component: Placeholder, meta: { requiresAuth: true } }
@@ -55,14 +63,22 @@ const router = createRouter({
   routes
 })
 
-// ç™»å½•æ ¡éªŒ
+// µÇÂ¼Ğ£Ñé + ²Ëµ¥È¨ÏŞÀ¹½Ø
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   if (to.meta.requiresAuth && !token) {
-    next('/login')
-  } else {
-    next()
+    return next('/login')
   }
+
+  // ÓĞtokenÊ±£¬Èç¹ûÒÑ¾­ÓĞ menus£¬Ôò×öÈ¨ÏŞÀ¹½Ø
+  const menus = JSON.parse(localStorage.getItem('menus') || '[]')
+  if (token && menus.length > 0) {
+    // dashboard ÓÀÔ¶ÔÊĞí
+    if (to.path !== '/dashboard' && !menus.includes(to.path)) {
+      return next('/dashboard')
+    }
+  }
+  next()
 })
 
 export default router

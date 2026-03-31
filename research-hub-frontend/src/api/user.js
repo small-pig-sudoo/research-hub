@@ -1,61 +1,67 @@
 import request from '../utils/request'
 
-// 获取用户列表
-export async function getUsers(params = {}) {
+const prefix = '/user'
+
+// 分页查询用户（用户列表用这个）
+export function getUsers(params) {
+    const { page = 1, pageSize = 10, ...otherParams } = params
     return request({
-        url: '/api/users',
+        url: `${prefix}/page`,
         method: 'get',
-        params
+        params: {
+            page,
+            size: pageSize,
+            ...otherParams
+        }
     })
 }
 
-// 获取用户详情
-export async function getUser(id) {
+// 兼容你旧命名（如果别处还在用 getUserPage）
+export function getUserPage(params) {
+    return getUsers(params)
+}
+
+export function getUser(id) {
     return request({
-        url: `/api/users/${id}`,
+        url: `${prefix}/${id}`,
         method: 'get'
     })
 }
 
-// 创建用户
-export async function createUser(userData) {
+export function createUser(userData) {
     return request({
-        url: '/api/users',
+        url: `${prefix}`,
         method: 'post',
         data: userData
     })
 }
 
-// 更新用户
-export async function updateUser(id, userData) {
+export function updateUser(id, userData) {
     return request({
-        url: `/api/users/${id}`,
+        url: `${prefix}/${id}`,
         method: 'put',
         data: userData
     })
 }
 
-// 删除用户
-export async function deleteUser(id) {
+export function deleteUser(id) {
     return request({
-        url: `/api/users/${id}`,
+        url: `${prefix}/${id}`,
         method: 'delete'
     })
 }
 
-// 重置用户密码
-export async function resetPassword(id, newPassword) {
+export function resetPassword(id, newPassword) {
     return request({
-        url: `/api/users/${id}/reset-password`,
+        url: `${prefix}/${id}/reset-password`,
         method: 'post',
         data: { newPassword }
     })
 }
 
-// 获取用户统计
-export async function getUserStats() {
+export function getUserStats() {
     return request({
-        url: '/api/users/stats',
+        url: `${prefix}/stats`,
         method: 'get'
     })
 }

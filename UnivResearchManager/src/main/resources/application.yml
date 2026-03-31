@@ -22,6 +22,10 @@ spring:
         jdbc.batch_size: 30
     open-in-view: false
 
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+
 # 关键：替换成 64 位以上的 JWT 密钥（直接用下面的示例，或自己生成）
 jwt:
   secret: q3t6w9z$C&F)J@NcRfUjXn2r5u8x/A?D*G-KaPdSgVkYp3s6v9y$B&E)H@McQfTjWnZr4u7

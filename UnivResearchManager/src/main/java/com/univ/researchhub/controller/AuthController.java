@@ -61,7 +61,7 @@ public class AuthController {
         data.put("userId", user.getUserId());
         data.put("username", user.getUsername());
         data.put("role", user.getRole());
-        data.put("name", user.getReal_name()); // 已通过User实体映射到real_name字段
+        data.put("name", user.getRealName()); // 已通过User实体映射到real_name字段
 
         // 6. 返回成功响应
         return ResultUtils.success(data);
